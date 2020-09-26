@@ -30,10 +30,10 @@ app
 		});
 
 		state.manage(window);
-		window.loadFile(`${__dirname}/index.html`);
+		window.loadFile(`${ConfigManager.ROOT_DIR}/src/index.html`);
 
 		window.webContents.on("dom-ready", () => {
-			console.log("ready");
+			window.webContents.executeJavaScript("console.log('test'");
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
 			window.webContents.openDevTools();
 		});
