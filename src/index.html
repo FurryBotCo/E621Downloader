@@ -4,10 +4,12 @@
 		<meta charset="UTF-8">
 		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+		<link rel="stylesheet" href="./assets/css/index.css" />
 		<style>
 		</style>
 	</head>
 	<body>
+		<h1 class="title">E621 Downloader</h1>
 		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
 			<table>
 				<tbody id="search-tags">
@@ -57,15 +59,17 @@
 			 * @prop {number} count
 			 * @prop {number} category
 			 */
-
+			
 			/**
-			 * @param {string} tag 
+			 * @param {string} tag
 			 * @return {Promise<AutoCompleteEntry[]>}
 			 */
 			async function autocomplete(tag) {
-				return fetch(`${window.apiURL}/autocomplete?tag=${tag}`).then(v => v.json()).then(v => v.data);
+				return fetch(`${window.apiURL}/autocomplete?tag=${tag}`)
+				.then(v => v.json())
+				.then(v => v.data);
 			}
-		</script>
+    	</script>
 		<!-- Remove This! -->
 		<a href="./settings.html" style="position: absolute; bottom: 5px; left: 5px;">Open Settings</a>
 	</body>
