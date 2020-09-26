@@ -14,17 +14,10 @@
 				<tbody id="search-tags">
 					<tr class="container">
 						<td class="input">
-							<input id="tags[]" type="text">
+							<input id="tags" type="text">
 						</td>
-					</tr>
-					<tr class="container">
-						<td class="input">
-							<input id="tags[]" type="text">
-						</td>
-					</tr>
-					<tr class="container">
-						<td class="input">
-							<input id="tags[]" type="text">
+						<td class="submit">
+							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</tbody>
@@ -45,6 +38,21 @@
 			 * @param {HTMLFormElement} e
 			 */
 			function handleSubmit(e) {}
+
+			/**
+			 * @typedef {Object} AutoCompleteEntry
+			 * @prop {string} name
+			 * @prop {number} count
+			 * @prop {number} category
+			 */
+
+			/**
+			 * @param {string} tag 
+			 * @return {Promise<AutoCompleteEntry[]>}
+			 */
+			async function autocomplete(tag) {
+				return fetch(`${window.apiURL}/autocomplete?tag=${tag}`).then(v => v.json()).then(v => v.data);
+			}
 		</script>
 	</body>
 </html>
