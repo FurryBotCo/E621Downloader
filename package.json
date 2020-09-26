@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Bulk download images from e621.",
   "productName": "E621 Downloader",
-  "main": "build/index.js",
+  "main": "build/src/index.js",
   "scripts": {
     "start": "tsc && electron-forge start",
     "package": "electron-forge package",
