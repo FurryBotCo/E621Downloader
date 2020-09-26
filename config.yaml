@@ -1,0 +1,7 @@
+e621:
+  key: ""
+  username: ""
+
+api:
+  host: "localhost"
+  port: 3621

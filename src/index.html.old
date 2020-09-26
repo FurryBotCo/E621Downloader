@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>E621 Downloader</title>
+		<meta charset="UTF-8">
+		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<form action="POST" method="http://localhost:3621/noop" onsubmit="return handleSubmit(this)">
+			<table>
+				<tbody id="search-tags">
+					<tr class="container">
+						<td class="input">
+							<input id="tags[]" type="text">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<script>
+			const removeButton = `<td class="button-remove"><button onclick="removeHandler(this)" type="button">-</button></td>`;
+			const addButton = `<td class="button-add"><button onclick="addHandler(this)" type="button">+</button><td>`;
+				
+				window.onload = () => document.querySelector("tbody#search-tags tr.container").innerHTML += addButton;
+
+			/**
+			 * @param {HTMLFormElement} e
+			 */
+			function handleSubmit(e) {}
+			/**
+			 * @param {HTMLButtonElement} e
+			 */
+			function addHandler(e) {
+				const n = e.parentNode;
+				n.removeChild(e);
+				try {} catch(e) {}
+				n.parentNode.parentNode.innerHTML += `<tr class="container"><td class="input"><input id="tags[]" type="text"></td><td class="add-remove">${addButton}${removeButton}</td></tr>`;
+			}
+
+			/**
+			 * @param {HTMLButtonElement} e
+			 */
+			function removeHandler(e) {
+				const n = e.parentNode.parentNode;
+				// e.parentNode.removeChild(e);
+			}
+		</script>
+	</body>
+</html>

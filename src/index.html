@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<title>E621 Downloader</title>
+		<meta charset="UTF-8">
+		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
+			<table>
+				<tbody id="search-tags">
+					<tr class="container">
+						<td class="input">
+							<input id="tags[]" type="text">
+						</td>
+					</tr>
+					<tr class="container">
+						<td class="input">
+							<input id="tags[]" type="text">
+						</td>
+					</tr>
+					<tr class="container">
+						<td class="input">
+							<input id="tags[]" type="text">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<script>
+			window.apiURL = null;
+			// window.onload = () => document.querySelector("form#main").action = `http://${config.api.host}:${config.api.port}/noop`;
+			window.addEventListener("DOMContentLoaded", () => {
+				setTimeout(() => {
+					window.apiURL = `http://${config.api.host}:${config.api.port}`;
+					console.log(`Using API URL "${window.apiURL}"`);
+					document.querySelector("form#main").action = `${window.apiURL}/noop`;
+				}, 25);
+			});
+			/**
+			 * @param {HTMLFormElement} e
+			 */
+			function handleSubmit(e) {}
+		</script>
+	</body>
+</html>
