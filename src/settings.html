@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>
+			E621 Downloader - Settings
+		</title>
+	</head>
+	<body>
+		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
+			<table>
+				<tbody id="settings">
+					<tr>
+						<td class="input">
+							<label for="key">E621 API Key</label>
+							<input type="text" name="key" placeholder="Your e621 api key.">
+						</td>
+					</tr>
+					<tr>
+						<td class="input">
+							<label for="username">E621 Username</label>
+							<input type="text" name="username" placeholder="Your e621 username.">
+						</td>
+					</tr>
+					<tr>
+						<td class="input">
+							<label for="saveDirectory">Save Directory</label>
+							<input type="text" name="saveDirectory" placeholder="Location to save images">
+						</td>
+					</tr>
+					<tr>
+						<td class="input">
+							<label for="overwriteExisting">Overwrite Existing</label>
+							<input type="checkbox" name="overwriteExisting" placeholder="Your e621 api key">
+						</td>
+					</tr>
+					<tr>
+						<td class="submit">
+							<input type="submit" value="Submit">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<script>
+			const key = document.querySelector("input[name=key]");
+			const username = document.querySelector("input[name=username]");
+			const saveDirectory = document.querySelector("input[name=saveDirectory]");
+			const overwriteExisting = document.querySelector("input[name=overwriteExisting]");
+
+			window.apiURL = null;
+			window.addEventListener("DOMContentLoaded", () => {
+				setTimeout(() => {
+					if(!window.config) window.location.reload();
+					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
+					console.debug(`Using API URL "${window.apiURL}"`);
+					document.querySelector("form#main").action = `${window.apiURL}/noop`;
+					key.value = config.e621.key || "";
+					username.value = config.e621.username || "";
+					saveDirectory.value = config.e621.saveDirectory || "";
+					overwriteExisting.value = config.e621.overwriteExisting ? "on" : "off";
+				}, 25);
+			});
+			/**
+			 * @param {HTMLFormElement} e
+			 */
+			function handleSubmit(e) {}
+		</script>
+		<!-- Remove This! -->
+		<a href="./index.html" style="position: absolute; bottom: 5px; left: 5px;">Back</a>
+	</body>
+</html>

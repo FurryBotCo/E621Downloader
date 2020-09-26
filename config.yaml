@@ -1,9 +1,8 @@
 e621:
   key: ""
   username: ""
-  # Some variables can be used here
-  # $ROOT - this directory
-  directory: "$ROOT/files"
+  saveDirectory: "./files"
+  overwriteExisting: true
 api:
   host: "localhost"
   port: 3621

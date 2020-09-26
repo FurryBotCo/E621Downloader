@@ -42,7 +42,7 @@
 				setTimeout(() => {
 					if(!window.config) window.location.reload();
 					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
-					console.log(`Using API URL "${window.apiURL}"`);
+					console.debug(`Using API URL "${window.apiURL}"`);
 					document.querySelector("form#main").action = `${window.apiURL}/noop`;
 				}, 25);
 			});
@@ -66,5 +66,7 @@
 				return fetch(`${window.apiURL}/autocomplete?tag=${tag}`).then(v => v.json()).then(v => v.data);
 			}
 		</script>
+		<!-- Remove This! -->
+		<a href="./settings.html" style="position: absolute; bottom: 5px; left: 5px;">Open Settings</a>
 	</body>
 </html>

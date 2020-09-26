@@ -10,7 +10,8 @@ interface Config {
 	e621: {
 		key: string;
 		username: string;
-		directory: string;
+		saveDirectory: string;
+		overwriteExisting: boolean;
 	};
 	api: {
 		host: string;
@@ -26,7 +27,7 @@ export default class ConfigManager {
 	static get() {
 		const f = this.loadFile();
 		const c = YAML.safeLoad(f.toString()) as Config;
-		c.e621.directory = path.resolve(c.e621.directory.replace(/\$ROOT/g, __dirname));
+		c.e621.saveDirectory = path.resolve(c.e621.saveDirectory.startsWith(".") ? `${this.ROOT_DIR}/${c.e621.saveDirectory}` : c.e621.saveDirectory);
 
 		return c;
 	}
