@@ -33,7 +33,7 @@ app
 		window.loadFile(`${ConfigManager.ROOT_DIR}/src/index.html`);
 
 		window.webContents.on("dom-ready", () => {
-			window.webContents.executeJavaScript("console.log('test')");
+			window.webContents.executeJavaScript("console.log('test'");
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
 			window.webContents.openDevTools();
 		});
