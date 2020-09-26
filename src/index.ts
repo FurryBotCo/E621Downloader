@@ -29,7 +29,7 @@ app
 		window.loadFile(`${__dirname}/index.html`);
 
 		window.webContents.on("dom-ready", () => {
-			window.webContents.executeJavaScript(`const config = ${JSON.stringify(config)};`);
+			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
 			window.webContents.openDevTools();
 		});
 	})
