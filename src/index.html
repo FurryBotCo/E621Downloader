@@ -1,58 +1,56 @@
 <html>
-  <head>
-    <title>E621 Downloader</title>
-    <meta charset="UTF-8" />
-    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="script-src 'self' 'unsafe-inline';"
-    />
-    <link rel="stylesheet" href="./assets/css/index.css" />
-    <style></style>
-  </head>
-  <body>
-    <h1 class="title">E621 Downloader</h1>
-    <form
-      id="main"
-      action=""
-      method="POST"
-      onsubmit="return handleSubmit(this)"
-    >
-      <table>
-        <tbody id="search-tags">
-          <tr class="container">
-            <td class="input">
-              <input id="tags" type="text" />
-            </td>
-            <td class="submit">
-              <input type="submit" value="Submit" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
-    <script>
-      window.apiURL = null;
-      // window.onload = () => document.querySelector("form#main").action = `http://${config.api.host}:${config.api.port}/noop`;
-      window.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-          // if(!window.config) window.location.reload();
-          window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
-          console.log(`Using API URL "${window.apiURL}"`);
-          document.querySelector("form#main").action = `${window.apiURL}/noop`;
-        }, 25);
-      });
-      /**
-       * @param {HTMLFormElement} e
-       */
-      function handleSubmit(e) {}
-
-      /**
-       * @typedef {Object} AutoCompleteEntry
-       * @prop {string} name
-       * @prop {number} count
-       * @prop {number} category
-       */
+	<head>
+		<title>E621 Downloader</title>
+		<meta charset="UTF-8">
+		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+		<link rel="stylesheet" href="./assets/css/index.css" />
+		<style>
+		</style>
+	</head>
+	<body>
+		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
+			<table>
+				<tbody id="search-tags">
+					<tr class="container">
+						<td class="input">
+							<input list="tags" type="text" name="tags">
+							<datalist id="tags"></datalist>
+						</td>
+						<td class="submit">
+							<input type="submit" value="Submit">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<script>
+			let timer;
+			document.querySelector("input[name=tags]").addEventListener("keyup", (e) => {
+				if(timer) clearTimeout(timer);
+				timer = setTimeout(async() => {
+					const t = document.querySelector("input[name=tags]").value.split(" ");
+					console.log(t);
+					if(!t[t.length - 1]) return;
+					const tags = await autocomplete(t[t.length - 1]);
+					const n = document.querySelector("datalist#tags");
+					for(const c of n.childNodes) n.removeChild(c);
+					for(const tag of tags) n.innerHTML += `<option value="${tag.name}"></option>`;
+				}, 500);
+			});
+			window.apiURL = null;
+			window.addEventListener("DOMContentLoaded", () => {
+				setTimeout(() => {
+					if(!window.config) window.location.reload();
+					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
+					console.log(`Using API URL "${window.apiURL}"`);
+					document.querySelector("form#main").action = `${window.apiURL}/noop`;
+				}, 25);
+			});
+			/**
+			 * @param {HTMLFormElement} e
+			 */
+			function handleSubmit(e) {}
 
       /**
        * @param {string} tag

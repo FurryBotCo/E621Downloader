@@ -3,14 +3,12 @@ import windowStateKeeper from "electron-window-state";
 import ConfigManager from "./ConfigManager";
 import os from "os"
 const config = ConfigManager.get();
-require("electron-reload")(`${__dirname}/../`);
+require("electron-reload")(`${__dirname}/../../`);
 import "./api";
 
 if (require("electron-squirrel-startup")) app.quit();
 
 let window: BrowserWindow, state: windowStateKeeper.State;
-
-
 
 app
 	.on("ready", () => {
