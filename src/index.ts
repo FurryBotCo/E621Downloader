@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import windowStateKeeper from "electron-window-state";
 import ConfigManager from "./ConfigManager";
+import os from "os"
 const config = ConfigManager.get();
 require("electron-reload")(`${__dirname}/../`);
 import "./api";
@@ -34,7 +35,7 @@ app
 
 		window.webContents.on("dom-ready", () => {
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
-			window.webContents.openDevTools();
+			if(os.hostname() !== "melio") window.webContents.openDevTools();
 		});
 	})
 	.on("window-all-closed", () => {
