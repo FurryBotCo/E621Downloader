@@ -2,23 +2,68 @@
   "name": "e621downloader",
   "version": "1.0.0",
   "description": "Bulk download images from e621.",
-  "main": "index.js",
+  "productName": "E621 Downloader",
+  "main": "build/index.js",
   "scripts": {
-    "start": "electron main"
+    "start": "tsc && electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts ."
   },
-  "author": "Donovan_DMC <dwddaniels262@gmail.com> (https://furry.cool)",
+  "keywords": [],
+  "author": {
+    "name": "Donovan_DMC",
+    "email": "dwddaniels262@gmail.com"
+  },
   "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "e621downloader_ef"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.53",
+    "@electron-forge/maker-deb": "^6.0.0-beta.53",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.53",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.53",
+    "@electron-forge/maker-zip": "^6.0.0-beta.53",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "@types/express": "^4.17.8",
     "@types/fs-extra": "^9.0.1",
     "@types/js-yaml": "^3.12.5",
     "@types/morgan": "^1.9.1",
-    "ts-node": "^9.0.0",
+    "electron-reload": "^1.5.0",
+    "electron": "10.1.2",
+    "eslint": "^7.9.0",
+    "eslint-plugin-import": "^2.22.0",
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "electron": "^10.1.2",
-    "electron-reload": "^1.5.0",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-window-state": "^5.0.3",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",

@@ -28,7 +28,7 @@
 			// window.onload = () => document.querySelector("form#main").action = `http://${config.api.host}:${config.api.port}/noop`;
 			window.addEventListener("DOMContentLoaded", () => {
 				setTimeout(() => {
-					if(!window.config) window.location.reload();
+					// if(!window.config) window.location.reload();
 					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
 					console.log(`Using API URL "${window.apiURL}"`);
 					document.querySelector("form#main").action = `${window.apiURL}/noop`;

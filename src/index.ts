@@ -5,7 +5,11 @@ const config = ConfigManager.get();
 require("electron-reload")(`${__dirname}/../`);
 import "./api";
 
+if (require("electron-squirrel-startup")) app.quit();
+
 let window: BrowserWindow, state: windowStateKeeper.State;
+
+
 
 app
 	.on("ready", () => {
@@ -29,6 +33,7 @@ app
 		window.loadFile(`${__dirname}/index.html`);
 
 		window.webContents.on("dom-ready", () => {
+			console.log("ready");
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
 			window.webContents.openDevTools();
 		});
