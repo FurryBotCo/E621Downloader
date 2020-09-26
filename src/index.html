@@ -3,8 +3,9 @@
 		<title>E621 Downloader</title>
 		<meta charset="UTF-8">
 		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-		<link rel="stylesheet" href="./assets/css/index.css" />
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+		<link rel="stylesheet" href="./assets/css/index.css">
+		<script src="./assets/js/debug.js"></script>
 	</head>
 	<body>
 		<h1 class="title">E621 Downloader</h1>
@@ -42,7 +43,7 @@
 				setTimeout(() => {
 					if(!window.config) window.location.reload();
 					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
-					console.debug(`Using API URL "${window.apiURL}"`);
+					debugLog();
 					document.querySelector("form#main").action = `${window.apiURL}/noop`;
 				}, 25);
 			});

@@ -6,7 +6,8 @@
 		</title>
 		<meta charset="UTF-8">
 		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+		<script src="./assets/js/debug.js"></script>
 	</head>
 	<body>
 		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
@@ -55,7 +56,7 @@
 				setTimeout(() => {
 					if(!window.config) window.location.reload();
 					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
-					console.debug(`Using API URL "${window.apiURL}"`);
+					debugLog();
 					document.querySelector("form#main").action = `${window.apiURL}/noop`;
 					key.value = config.e621.key || "";
 					username.value = config.e621.username || "";
