@@ -10,6 +10,7 @@ interface Config {
 	e621: {
 		key: string;
 		username: string;
+		directory: string;
 	};
 	api: {
 		host: string;
@@ -23,13 +24,16 @@ export default class ConfigManager {
 
 	static get() {
 		const f = this.loadFile();
-		const c = YAML.safeLoad(f.toString());
+		const c = YAML.safeLoad(f.toString()) as Config;
+		c.e621.directory = path.resolve(c.e621.directory.replace(/\$ROOT/g, __dirname));
 
-		return c as Config;
+		return c;
 	}
 
 	static edit(values: DeepPartial<Config>) {
-		const c = Object.assign(this.get(), values);
+		const v = this.get();
+		const c = { ...v, ...values };
+		if (JSON.stringify(v) === JSON.stringify(c)) return;
 		fs.writeFileSync(this.LOCATION, YAML.safeDump(c));
 	}
 }
