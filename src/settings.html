@@ -57,7 +57,7 @@
 					key.value = config.e621.key || "";
 					username.value = config.e621.username || "";
 					saveDirectory.value = config.e621.saveDirectory || "";
-					overwriteExisting.value = config.e621.overwriteExisting ? "on" : "off";
+					if(config.e621.overwriteExisting) overwriteExisting.checked = "checked";
 				}, 25);
 			});
 			/**
