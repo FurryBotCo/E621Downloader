@@ -1,9 +1,8 @@
 import { app, BrowserWindow } from "electron";
 import windowStateKeeper from "electron-window-state";
 import ConfigManager from "./ConfigManager";
-import os from "os"
 const config = ConfigManager.get();
-require("electron-reload")(`${__dirname}/../../`);
+require("electron-reload")(ConfigManager.ROOT_DIR);
 import "./api";
 
 if (require("electron-squirrel-startup")) app.quit();
@@ -33,7 +32,6 @@ app
 
 		window.webContents.on("dom-ready", () => {
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
-			if(os.hostname() !== "melio") window.webContents.openDevTools();
 		});
 	})
 	.on("window-all-closed", () => {
