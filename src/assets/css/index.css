@@ -143,4 +143,14 @@ a.bottom-left:hover {
   background-color: crimson;
   color: white;
 }
+
+.save-icon {
+  -webkit-filter: invert(100%);
+          filter: invert(100%);
+  width: 35px;
+  position: absolute;
+  padding-top: 15px;
+  padding-left: 15px;
+  cursor: pointer;
+}
 /*# sourceMappingURL=index.css.map */
