@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>E621 Downloader</title>
+    <title>E621 Downloader - Home</title>
     <meta charset="UTF-8" />
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <meta
@@ -10,7 +10,47 @@
     <link rel="stylesheet" href="../assets/css/index.css" />
     <link rel="stylesheet" href="../assets/css/awesomplete.min.css" />
     <script src="../assets/js/awesomplete.js"></script>
-    <script src="../assets/js/main.js" async></script>
+	<script src="../assets/js/main.js" async></script>
+	<style>
+		div#progress progress {
+			width: 40%;
+			height: 40px;
+			text-align: center;
+			margin: auto;
+			justify-content: center;
+			display: flex;
+		}
+
+		div#debug {
+			border: 2px solid black;
+			position: absolute;
+			bottom: 5px;
+			right: 5px;
+			height: 60%;
+			width: 50%;
+            overflow-x: hidden; 
+			overflow-y: auto; 
+            text-align:justify; 
+		}
+
+		div#debug debug-entry span {
+			margin: 5px;
+			font-size: x-large;
+		}
+
+		div#debug debug-entry.error span {
+			color: darkred;
+			font-weight: bold;
+		}
+
+		div#debug debug-entry.info span {
+			color: blueviolet;
+		}
+
+		.hidden {
+			display: none;
+		}
+	</style>
   </head>
   <body>
     <h1 class="title">E621 Downloader</h1>
@@ -19,17 +59,37 @@
         <tbody id="search-tags">
           <tr class="container">
             <td class="input">
-              <input list="tags" type="text" name="tags" />
+              <input type="text" name="tags" placeholder="Space separated list" />
             </td>
-            <td class="submit">
-              <input type="submit" value="Submit" />
+            <td class="input">
+              <input type="text" name="folder" placeholder="folder name" />
             </td>
-          </tr>
+		  </tr>
+		  <tr>
+            <td class="start" colspan="2">
+              <input type="submit" value="Start" />
+            </td>
+		  </tr>
         </tbody>
       </table>
-    </form>
+	</form>
+	<div id="progress" class="hidden">
+		<progress value="0" max="0"></progress>
+	</div>
+	<div id="debug"></div>
     <script>
-      let timer, lastAutocomplete;
+	  function showProgress() { document.querySelector("div#progress").classList.remove("hidden"); }
+	  function hideProgress() { document.querySelector("div#progress").classList.add("hidden"); }
+	  function createLogEntry(text, type) {
+		  document.querySelector("div#debug").innerHTML += `<debug-entry class="${type}"><span>${text}</span><br></debug-entry>`;
+		  document.querySelector("div#debug").scrollTop = document.querySelector("div#debug").scrollHeight;
+		  /*const tooLong = checkLogSize();
+		  if(tooLong) {
+			  const e = Array.from(document.querySelectorAll("div#debug debug-entry"));
+			  e[0].parentNode.removeChild(e[0]);
+		  }*/
+	  } 
+	  let timer, lastAutocomplete;
       const tv = document.querySelector("input[name=tags]");
       const as = new Awesomplete(tv, {
         minChars: 1,
@@ -58,9 +118,8 @@
         }, 200);
       });
       window.addEventListener("error", (ev) => {
-        console.info(ev);
+		createLogEntry(ev.error.stack, "error");
       });
-      window.apiURL = null;
       window.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           if (!window.config) window.location.reload();
@@ -70,7 +129,19 @@
       /**
        * @param {HTMLFormElement} e
        */
-      function handleSubmit(e) {}
+      function handleSubmit(e) {
+		  const tags = e.querySelector("input[name=tags]").value.split(" ");
+		  const folder = e.querySelector("input[name=folder]").value?.replace(/[^a-z0-9_\-]/gi, "_")?.replace(/_{2,}/g, "_")?.toLowerCase();
+		  if(tags.length === 0 || tags[0].length === 0) {
+			  createLogEntry("1 or more tags are required.", "error");
+			  return;
+		  }
+		  if(!folder) {
+			  createLogEntry("Folder name is required.", "error");
+			  return;
+		  }
+		  start(tags, folder);
+	  }
     </script>
     <a class="bottom-left" href="./settings.html">Settings</a>
   </body>
