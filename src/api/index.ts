@@ -15,7 +15,7 @@ app
 		ConfigManager.edit({
 			e621: {
 				key: req.body.key,
-				username: req.body.usernamr
+				username: req.body.username
 			}
 		});
 

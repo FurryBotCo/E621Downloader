@@ -8,6 +8,8 @@
 		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 		<script src="./assets/js/debug.js"></script>
+		<link rel="stylesheet" href="./assets/css/index.css" />
+
 	</head>
 	<body>
 		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
@@ -28,14 +30,20 @@
 					<tr>
 						<td class="input">
 							<label for="saveDirectory">Save Directory</label>
-							<input type="text" name="saveDirectory" placeholder="Location to save images">
+							<input type="text" name="saveDirectory" placeholder="Location to save images to">
 						</td>
 					</tr>
 					<tr>
-						<td class="input">
-							<label for="overwriteExisting">Overwrite Existing</label>
-							<input type="checkbox" name="overwriteExisting" placeholder="Your e621 api key">
+						<td >
+							<label for="">Overwrite existing</label>
+							<br>
+							<br>
+							<label class="switch">
+								<input name="overwriteExisting" type="checkbox">
+								<span class="slider round"></span>
+							  </label>
 						</td>
+						
 					</tr>
 					<tr>
 						<td class="submit">
@@ -70,6 +78,6 @@
 			function handleSubmit(e) {}
 		</script>
 		<!-- Remove This! -->
-		<a href="./index.html" style="position: absolute; bottom: 5px; left: 5px;">Back</a>
+		<a href="./index.html" class="bottom-left"">Back</a>
 	</body>
 </html>

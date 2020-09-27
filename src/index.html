@@ -1,87 +1,101 @@
 <html>
-	<head>
-		<title>E621 Downloader</title>
-		<meta charset="UTF-8">
-		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-		<link rel="stylesheet" href="./assets/css/index.css">
-		<link rel="stylesheet" href="./assets/css/awesomplete.min.css">
-		<script src="./assets/js/awesomplete.js"></script>
-		<script src="./assets/js/debug.js" async></script>
-	</head>
-	<body>
-		<h1 class="title">E621 Downloader</h1>
-		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
-			<table>
-				<tbody id="search-tags">
-					<tr class="container">
-						<td class="input">
-							<input list="tags" type="text" name="tags">
-						</td>
-						<td class="submit">
-							<input type="submit" value="Submit">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
-		<script>
-			let timer, lastAutocomplete;
-			const tv = document.querySelector("input[name=tags]");
-			const as = new Awesomplete(tv, {
-				minChars: 1,
-				filter: ((text, input) => Awesomplete.FILTER_CONTAINS(text, input.match(/[^\s]*$/)?.[0])),
-				item: ((text, input) => Awesomplete.ITEM(text, input.match(/[^\s]*$/)?.[0])),
-				replace: ((text) => as.input.value = `${as.input.value.split(" ").slice(0, -1).join(" ")} ${text.value} `)
-			});
-			tv.addEventListener("keyup", (e) => {
-				if(timer) clearTimeout(timer);
-				timer = setTimeout(async() => {
-					const t = tv.value.split(" ");
-					const v = t[t.length - 1];
-					console.log(t, v);
-					if(!v || lastAutocomplete === v) return;
-					lastAutocomplete = v;
-					const tags = await autocomplete(v);
-					console.log(tags);
-					as.list = tags.map(v => v.name);
-				}, 200);
-			});
-			window.addEventListener("error", (ev) => {
-				console.info(ev);
-			});
-			window.apiURL = null;
-			window.addEventListener("DOMContentLoaded", () => {
-				setTimeout(() => {
-					if(!window.config) window.location.reload();
-					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
-					debugLog();
-					document.querySelector("form#main").action = `${window.apiURL}/noop`;
-				}, 100);
-			});
-			/**
-			 * @param {HTMLFormElement} e
-			 */
-			function handleSubmit(e) {}
+  <head>
+    <title>E621 Downloader</title>
+    <meta charset="UTF-8" />
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+    <link rel="stylesheet" href="./assets/css/index.css" />
+    <link rel="stylesheet" href="./assets/css/awesomplete.min.css" />
+    <script src="./assets/js/awesomplete.js"></script>
+    <script src="./assets/js/debug.js" async></script>
+  </head>
+  <body>
+    <h1 class="title">E621 Downloader</h1>
+    <form
+      id="main"
+      action=""
+      method="POST"
+      onsubmit="return handleSubmit(this)"
+    >
+      <table>
+        <tbody id="search-tags">
+          <tr class="container">
+            <td class="input">
+              <input list="tags" type="text" name="tags" />
+            </td>
+            <td class="submit">
+              <input type="submit" value="Submit" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+    <script>
+      let timer, lastAutocomplete;
+      const tv = document.querySelector("input[name=tags]");
+      const as = new Awesomplete(tv, {
+        minChars: 1,
+        filter: (text, input) =>
+          Awesomplete.FILTER_CONTAINS(text, input.match(/[^\s]*$/)?.[0]),
+        item: (text, input) =>
+          Awesomplete.ITEM(text, input.match(/[^\s]*$/)?.[0]),
+        replace: (text) =>
+          (as.input.value = `${as.input.value
+            .split(" ")
+            .slice(0, -1)
+            .join(" ")} ${text.value} `),
+      });
+      tv.addEventListener("keyup", (e) => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(async () => {
+          const t = tv.value.split(" ");
+          const v = t[t.length - 1];
+          console.log(t, v);
+          if (!v || lastAutocomplete === v) return;
+          lastAutocomplete = v;
+          const tags = await autocomplete(v);
+          console.log(tags);
+          as.list = tags.map((v) => v.name);
+        }, 200);
+      });
+      window.addEventListener("error", (ev) => {
+        console.info(ev);
+      });
+      window.apiURL = null;
+      window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+          if (!window.config) window.location.reload();
+          window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
+          debugLog();
+          document.querySelector("form#main").action = `${window.apiURL}/noop`;
+        }, 100);
+      });
+      /**
+       * @param {HTMLFormElement} e
+       */
+      function handleSubmit(e) {}
 
-			/**
-			 * @typedef {Object} AutoCompleteEntry
-			 * @prop {string} name
-			 * @prop {number} count
-			 * @prop {number} category
-			 */
+      /**
+       * @typedef {Object} AutoCompleteEntry
+       * @prop {string} name
+       * @prop {number} count
+       * @prop {number} category
+       */
 
-			/**
-			 * @param {string} tag
-			 * @return {Promise<AutoCompleteEntry[]>}
-			 */
-			async function autocomplete(tag) {
-				return fetch(`${window.apiURL}/autocomplete?tag=${tag}`)
-				.then(v => v.json())
-				.then(v => v.data);
-			}
-    	</script>
-		<!-- Remove This! -->
-		<a href="./settings.html" style="position: absolute; bottom: 5px; left: 5px;">Open Settings</a>
-	</body>
+      /**
+       * @param {string} tag
+       * @return {Promise<AutoCompleteEntry[]>}
+       */
+      async function autocomplete(tag) {
+        return fetch(`${window.apiURL}/autocomplete?tag=${tag}`)
+          .then((v) => v.json())
+          .then((v) => v.data);
+      }
+    </script>
+    <!-- Remove This! -->
+    <a class="bottom-left" href="./settings.html">Settings</a>
+  </body>
 </html>
