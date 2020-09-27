@@ -88,5 +88,7 @@ typings/
 # Electron-Forge
 out/
 
-# built files
+# application things
+out/
 build/
+files/
