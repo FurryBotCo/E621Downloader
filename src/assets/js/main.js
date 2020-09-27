@@ -113,7 +113,7 @@ async function start(tags, folder) {
 			}
 		}
 	};
-	ipcRenderer.on("debug", );
+	ipcRenderer.on("debug", l);
 	ipcRenderer.on("end", () => {
 		console.log("end");
 		ipcRenderer.off("debug", l);
