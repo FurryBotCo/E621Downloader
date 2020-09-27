@@ -13,7 +13,7 @@ let window: BrowserWindow, state: windowStateKeeper.State;
 
 ipcMain
 	.on("autocomplete-request", async (ev, tag: string, id: string) => {
-		console.debug(`Recieved autocomplete request with the id "${id}"`);
+		console.debug(`Recieved autocomplete request with the id "${id}" for the tag "${tag}"`);
 		const v = await Utility.autocompleteRequest(tag);
 		return ev.reply("autocomplete-response", id, v);
 	})
