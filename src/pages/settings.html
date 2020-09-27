@@ -11,7 +11,7 @@
 		<script src="../assets/js/main.js"></script>
 	</head>
 	<body>
-		<form id="main" action="" method="POST" onsubmit="return handleSubmit(this)">
+		<form id="main" onsubmit="handleSubmit(this); return false;">
 			<table>
 				<tbody id="settings">
 					<tr>
@@ -58,25 +58,21 @@
 			const saveDirectory = document.querySelector("input[name=saveDirectory]");
 			const overwriteExisting = document.querySelector("input[name=overwriteExisting]");
 
-			window.apiURL = null;
 			window.addEventListener("DOMContentLoaded", () => {
 				setTimeout(() => {
 					if(!window.config) window.location.reload();
-					window.apiURL = `http://${window.config.api.host}:${window.config.api.port}`;
 					debugLog();
-					document.querySelector("form#main").action = `${window.apiURL}/noop`;
-					key.value = config.e621.key || "";
-					username.value = config.e621.username || "";
-					saveDirectory.value = config.e621.saveDirectory || "";
-					if(config.e621.overwriteExisting) overwriteExisting.checked = "checked";
-				}, 25);
+					key.value = config.key || "";
+					username.value = config.username || "";
+					saveDirectory.value = config.saveDirectory || "";
+					if(config.overwriteExisting) overwriteExisting.checked = "checked";
+				}, 100);
 			});
 			/**
 			 * @param {HTMLFormElement} e
 			 */
 			function handleSubmit(e) {}
 		</script>
-		<!-- Remove This! -->
 		<a href="./index.html" class="bottom-left"">Back</a>
 	</body>
 </html>
