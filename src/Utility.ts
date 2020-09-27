@@ -153,7 +153,7 @@ export default class Utility {
 	static async startDownload(ev: Electron.IpcMainEvent, tags: string[], folder: string, window: Electron.BrowserWindow) {
 		const start = performance.now();
 		const c = ConfigManager.get();
-		const dir = path.resolve(`${c.saveDirectory}/${folder}`);
+		const dir = path.resolve(`${c.saveDirectory}/${folder.trim()}`);
 		if (!fs.existsSync(dir)) fs.mkdirpSync(dir);
 		let auth: string | null = null;
 		if (c.username && c.key) auth = Buffer.from(`${c.username}:${c.key}`).toString("base64");
