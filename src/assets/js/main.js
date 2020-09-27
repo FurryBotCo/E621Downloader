@@ -21,7 +21,7 @@ function debugLog() {
  */
 async function autocompleteTags(tag) {
 	return new Promise((a,b) => {
-		const id = crypto.randomBytes(32).toString("hex");
+		const id = crypto.randomBytes(8).toString("hex");
 		ipcRenderer.send("autocomplete-request", tag, id);
 		const l = ((ev, d, dt) => {
 			console.debug(`Recived autocomplete response with the id "${d}"`);
