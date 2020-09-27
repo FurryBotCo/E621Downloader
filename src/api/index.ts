@@ -55,11 +55,18 @@ app
 					}[] = JSON.parse(Buffer.concat(data).toString());
 					return res.status(200).json({
 						success: true,
-						data: d.map(v => ({
-							name: v.name,
-							count: v.post_count,
-							category: v.category
-						}))
+						data: [
+							...d.map(v => ({
+								name: v.name,
+								count: v.post_count,
+								category: v.category
+							})),
+							...d.filter(v => v.antecedent_name !== null).map(v => ({
+								name: v.antecedent_name,
+								count: v.post_count,
+								category: v.category
+							}))
+						]
 					});
 				});
 		})
