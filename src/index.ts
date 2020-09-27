@@ -13,7 +13,7 @@ let window: BrowserWindow, state: windowStateKeeper.State;
 
 ipcMain
 	.on("autocomplete-request", async (ev, tag: string, id: string) => {
-		console.debug(`Recieved autocomplete request with the id "${id}"`);
+		console.debug(`Received autocomplete request with the id "${id}"`);
 		const v = await Utility.autocompleteRequest(tag);
 		return ev.reply("autocomplete-response", id, v);
 	})
@@ -37,9 +37,9 @@ app
 				enableRemoteModule: true
 			}
 		});
-
 		state.manage(window);
 		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
+		window.setBackgroundColor('#333')
 
 		window.webContents.on("dom-ready", () => {
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);

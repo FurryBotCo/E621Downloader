@@ -19,12 +19,13 @@ function debugLog() {
  * @param {string} tag
  * @return {Promise<AutoCompleteEntry[]>}
  */
+
 async function autocompleteTags(tag) {
 	return new Promise((a,b) => {
 		const id = crypto.randomBytes(32).toString("hex");
 		ipcRenderer.send("autocomplete-request", tag, id);
 		const l = ((ev, d, dt) => {
-			console.debug(`Recived autocomplete response with the id "${d}"`);
+			console.debug(`Received autocomplete response with the id "${d}"`);
 			if(d !== id) return;
 			else ipcRenderer.off("autocomplete-response", l);
 			if(dt.error) {
@@ -68,7 +69,7 @@ async function start(tags, folder) {
 				break;
 			}
 
-			case "fetch-recieve": {
+			case "fetch-receive": {
 				const [tags, page, amount] = args;
 				return createLogEntry(`${amount} posts found on page #${page}.`, "info");
 				break;
@@ -130,7 +131,7 @@ async function selectFolder() {
 		const d = await dialog.showOpenDialog({
 			properties: ["openDirectory"]
 		});
-		if(!d || d.filePaths.length === 0) return alert("Please select a falid folder.");
+		if(!d || d.filePaths.length === 0) return alert("Please select a valid folder.");
 		document.querySelector("input[name=saveDirectory]").value = d.filePaths[0];
 		return;
 	}

@@ -72,3 +72,30 @@ a.bottom-left
     padding-top: 15px
     padding-left: 15px
     cursor: pointer
+
+
+progress[value]
+    -webkit-appearance: none
+    appearance: 
+    width: 40%;
+    height: 30px
+    text-align: center;
+    margin: auto;
+    justify-content: center;
+    display: flex;
+
+
+progress[value]::-webkit-progress-bar 
+    background-color: #222;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+
+
+progress[value]::-webkit-progress-value
+    // background-image: -webkit-linear-gradient(-45deg, transparent 33%, rgba(0, 0, 0, .1) 33%,rgba(0,0, 0, .1) 66%, transparent 66%),-webkit-linear-gradient(top,rgba(255, 255, 255, .25),rgba(0, 0, 0, .25)),-webkit-linear-gradient(left, #09c, #f44);
+    background-color: crimson
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    transition: width 0.5s ease;
+
+
