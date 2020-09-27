@@ -153,4 +153,33 @@ a.bottom-left:hover {
   padding-left: 15px;
   cursor: pointer;
 }
+
+progress[value] {
+  -webkit-appearance: none;
+  width: 40%;
+  height: 30px;
+  text-align: center;
+  margin: auto;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: #222;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+progress[value]::-webkit-progress-value {
+  background-color: crimson;
+  border-radius: 2px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+  -webkit-transition: width 0.5s ease;
+  transition: width 0.5s ease;
+}
 /*# sourceMappingURL=index.css.map */

@@ -37,9 +37,9 @@ app
 				enableRemoteModule: true
 			}
 		});
-
 		state.manage(window);
 		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
+		window.setBackgroundColor("#333");
 
 		window.webContents.on("dom-ready", () => {
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(config)};`);
