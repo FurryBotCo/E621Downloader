@@ -1,8 +1,4 @@
-e621:
-  key: ""
-  username: ""
-  saveDirectory: "./files"
-  overwriteExisting: true
-api:
-  host: "localhost"
-  port: 3621
+key: ""
+username: ""
+saveDirectory: "./files"
+overwriteExisting: true

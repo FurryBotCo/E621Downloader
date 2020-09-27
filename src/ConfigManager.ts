@@ -7,16 +7,10 @@ type DeepPartial<T> = {
 };
 
 interface Config {
-	e621: {
-		key: string;
-		username: string;
-		saveDirectory: string;
-		overwriteExisting: boolean;
-	};
-	api: {
-		host: string;
-		port: number;
-	};
+	key: string;
+	username: string;
+	saveDirectory: string;
+	overwriteExisting: boolean;
 }
 
 export default class ConfigManager {
@@ -27,7 +21,7 @@ export default class ConfigManager {
 	static get() {
 		const f = this.loadFile();
 		const c = YAML.safeLoad(f.toString()) as Config;
-		c.e621.saveDirectory = path.resolve(c.e621.saveDirectory.startsWith(".") ? `${this.ROOT_DIR}/${c.e621.saveDirectory}` : c.e621.saveDirectory);
+		c.saveDirectory = path.resolve(c.saveDirectory.startsWith(".") ? `${this.ROOT_DIR}/${c.saveDirectory}` : c.saveDirectory);
 
 		return c;
 	}
