@@ -53,7 +53,7 @@ function checkLogSize() {
  */
 async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
-	const l = ipcRenderer.on("debug", (ev, type, ...args) => {
+	const l = (ev, type, ...args) => {
 		console.log(type, ...args);
 		switch(type) {
 			case "fetch-begin": {
@@ -112,7 +112,8 @@ async function start(tags, folder) {
 				break;
 			}
 		}
-	});
+	};
+	ipcRenderer.on("debug", );
 	ipcRenderer.on("end", () => {
 		console.log("end");
 		ipcRenderer.off("debug", l);
