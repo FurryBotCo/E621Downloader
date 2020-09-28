@@ -5,7 +5,7 @@ import pkg from "../package.json";
 import ConfigManager from "./ConfigManager";
 import Utility from "./Utility";
 const config = ConfigManager.get();
-require("electron-reload")(ConfigManager.ROOT_DIR);
+require("electron-reload")(`${ConfigManager.ROOT_DIR}/src`);
 
 if (require("electron-squirrel-startup")) app.quit();
 

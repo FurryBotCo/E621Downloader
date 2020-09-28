@@ -169,6 +169,7 @@ export default class Utility {
 		}
 		const end = performance.now();
 
-		ev.reply("end", posts.length, parseFloat((end - start).toFixed(3)));
+		window.setProgressBar(-1);
+		ev.reply("debug", "end", posts.length, parseFloat((end - start).toFixed(3)));
 	}
 }
