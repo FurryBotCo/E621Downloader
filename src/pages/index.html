@@ -41,13 +41,17 @@
       .hidden {
         display: none;
       }
+
+      input::placeholder {
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <h1 class="title">E621 Downloader</h1>
     <form id="main" onsubmit="handleSubmit(this); return false;">
       <table>
-        <tbody id="search-tags">
+        <tbody id="search-setup">
           <tr class="container">
             <td class="input">
               <input
