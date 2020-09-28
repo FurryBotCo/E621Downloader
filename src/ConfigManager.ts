@@ -15,27 +15,37 @@ interface Config {
 
 export default class ConfigManager {
 	static ROOT_DIR = path.resolve(`${__dirname}/../${__filename.endsWith("ts") ? "" : "../"}`);
-	static LOCATION = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/E621Downloader/config.yaml`);
-	static DEFAULT_LOCATION = path.resolve(`${ConfigManager.ROOT_DIR}/config.default.yaml`);
-	static loadFile() { return fs.readFileSync(this.LOCATION); }
+	static DIR = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/E621Downloader`);
+	static FILE = `${ConfigManager.DIR}/config.yaml`;
+	static DEFAULT_DIR = path.resolve(ConfigManager.ROOT_DIR);
+	static DEFAULT_FILE = `${ConfigManager.DEFAULT_DIR}/config.default.yaml`;
+	static loadFile() { return fs.readFileSync(this.FILE); }
 
 	static setup() {
-		if (!fs.existsSync(this.LOCATION)) {
-			const d = path.dirname(this.LOCATION);
-			if (!fs.existsSync(d)) {
-				console.log(`Creating configuration directory "${d}"`);
-				fs.mkdirpSync(d);
+		if (!fs.existsSync(this.FILE)) {
+			if (!fs.existsSync(this.DIR)) {
+				console.log(`Creating configuration directory "${this.DIR}"`);
+				fs.mkdirpSync(this.DIR);
 			}
-			console.log(`Copying default config file "${this.DEFAULT_LOCATION}" to "${this.LOCATION}"`);
-			fs.copyFileSync(this.DEFAULT_LOCATION, this.LOCATION);
+			console.log(`Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
+			fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
 		}
+	}
+
+	static parseDirectory(dir: string) {
+		if (dir.startsWith(".")) {
+			dir = `${this.DIR}/${dir}`;
+		}
+		const v = { ...process.env, CONFIG: this.DIR };
+		for (const k of Object.keys(v)) dir = dir.replace(new RegExp(process.platform === "win32" ? `%${k}%` : `$${k}`, "gi"), v[k]!);
+		return path.resolve(dir);
 	}
 
 	static get() {
 		this.setup();
 		const f = this.loadFile();
 		const c = YAML.safeLoad(f.toString()) as Config;
-		c.saveDirectory = path.resolve(c.saveDirectory.startsWith(".") ? `${this.ROOT_DIR}/${c.saveDirectory}` : c.saveDirectory);
+		c.saveDirectory = this.parseDirectory(c.saveDirectory);
 
 		return c;
 	}
@@ -44,6 +54,6 @@ export default class ConfigManager {
 		const v = this.get();
 		const c = { ...v, ...values };
 		if (JSON.stringify(v) === JSON.stringify(c)) return;
-		fs.writeFileSync(this.LOCATION, YAML.safeDump(c));
+		fs.writeFileSync(this.FILE, YAML.safeDump(c));
 	}
 }

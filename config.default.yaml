@@ -1,4 +1,4 @@
 key: ""
 username: ""
-saveDirectory: "./files"
+saveDirectory: "%CONFIG%/Files"
 overwriteExisting: true
