@@ -15,7 +15,7 @@ interface Config {
 
 export default class ConfigManager {
 	static ROOT_DIR = path.resolve(`${__dirname}/../${__filename.endsWith("ts") ? "" : "../"}`);
-	static LOCATION = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.local/share")}/E621Downloader/config.yaml`);
+	static LOCATION = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/E621Downloader/config.yaml`);
 	static DEFAULT_LOCATION = path.resolve(`${ConfigManager.ROOT_DIR}/config.default.yaml`);
 	static loadFile() { return fs.readFileSync(this.LOCATION); }
 
