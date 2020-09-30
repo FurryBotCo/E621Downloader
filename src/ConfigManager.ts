@@ -10,6 +10,7 @@ interface Config {
 	key: string;
 	username: string;
 	saveDirectory: string;
+	logFile: string;
 	overwriteExisting: boolean;
 }
 
@@ -29,6 +30,16 @@ export default class ConfigManager {
 			}
 			console.log(`Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
 			fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
+		} else {
+			let c: Config;
+			try {
+
+				const f = this.loadFile();
+				c = YAML.safeLoad(f.toString()) as Config;
+			} catch (e) {
+				console.error(e);
+				console.log(`Recreating config file due to read error`);
+			}
 		}
 	}
 
@@ -46,6 +57,7 @@ export default class ConfigManager {
 		const f = this.loadFile();
 		const c = YAML.safeLoad(f.toString()) as Config;
 		c.saveDirectory = this.parseDirectory(c.saveDirectory);
+		c.logFile = this.parseDirectory(c.logFile);
 
 		return c;
 	}

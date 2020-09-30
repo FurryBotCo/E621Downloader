@@ -1,4 +1,5 @@
 key: ""
 username: ""
 saveDirectory: "%CONFIG%/Files"
+logFile: "%CONFIG%/out.log"
 overwriteExisting: true
