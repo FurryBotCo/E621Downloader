@@ -3,7 +3,6 @@ import windowStateKeeper from "electron-window-state";
 import ConfigManager from "./ConfigManager";
 import Logger from "./Logger";
 import Utility from "./Utility";
-require("electron-reload")(`${ConfigManager.ROOT_DIR}/src`);
 
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 
