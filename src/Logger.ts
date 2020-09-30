@@ -11,6 +11,10 @@ export default class Logger {
 	static warn(message: string) { return this._log("warn", message); }
 
 	private static _log(type: string, message: string) {
-		const f = ConfigManager.get().logFile
+		const f = ConfigManager.get().logFile;
+		const d = new Date();
+		const format = ((type: string, d = new Date()) => `[${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}][${d.toString().split(" ")[4]}][${type.toUpperCase()}]`);
+		fs.appendFileSync(f, `${format(type, d)}: ${message}`);
+		console.log(format(type, d), ":", message);
 	}
 }
