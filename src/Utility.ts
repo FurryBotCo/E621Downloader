@@ -95,7 +95,7 @@ export default class Utility {
 					.on("error", (err) => b(err))
 					.on("end", async () => {
 						const d = JSON.parse(Buffer.concat(data).toString());
-						ev?.reply("debug", "fetch-recieve", tags, page, d.posts.length);
+						ev?.reply("debug", "fetch-receive", tags, page, d.posts.length);
 
 						posts.push(...d.posts.map(p => ({
 							id: p.id,

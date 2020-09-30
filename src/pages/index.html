@@ -11,41 +11,6 @@
     <link rel="stylesheet" href="../assets/css/awesomplete.min.css" />
     <script src="../assets/js/awesomplete.js"></script>
     <script src="../assets/js/main.js" async></script>
-    <style>
-      div#debug {
-        border: 2px solid black;
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        height: 40%;
-        width: 50%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        text-align: justify;
-      }
-
-      div#debug debug-entry span {
-        margin: 5px;
-        font-size: x-large;
-      }
-
-      div#debug debug-entry.error span {
-        color: darkred;
-        font-weight: bold;
-      }
-
-      div#debug debug-entry.info span {
-        color: blueviolet;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      input::placeholder {
-        text-align: center;
-      }
-    </style>
   </head>
   <body>
     <h1 class="title">E621 Downloader</h1>
@@ -57,11 +22,11 @@
               <input
                 type="text"
                 name="tags"
-                placeholder="Space separated list"
+                placeholder="Space separated tag list"
               />
             </td>
             <td class="input">
-              <input type="text" name="folder" placeholder="folder name" />
+              <input type="text" name="folder" placeholder="Folder name" />
             </td>
           </tr>
           <tr>
@@ -75,6 +40,7 @@
     <div id="progress" class="hidden">
       <progress value="0" max="0"></progress>
     </div>
+    <br />
     <div id="debug"></div>
     <script>
       function showProgress() {

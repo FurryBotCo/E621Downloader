@@ -14,7 +14,7 @@ input
     color: white
     background-color: #222222
     font-size: 1.5rem
-    font-family: 'Raleway', sans-serif;
+
 
 label
     color: white
@@ -40,15 +40,28 @@ a.bottom-left
     bottom: 0; 
     left: 0
     color: white
-    padding-left: 50px
-    padding-bottom: 50px
+    margin-left: 50px
+    margin-bottom: 50px
     text-decoration: none
     font-size: 2rem
     
+    
     &:hover
-        color: grey
+        color: #b1b1b1
+        // border-left: solid 3px #b1b1b1
+        padding-left: 3px
+        animation: hover-left-right 3s linear infinite
+        
 
-
+@keyframes hover-left-right
+    0%
+        left: 0px
+    25%
+        left: 8px
+    50%
+        left: 15px
+    100%
+        left: 0px
 
 #awesomplete_list_1
     background: #333333
@@ -99,3 +112,38 @@ progress[value]::-webkit-progress-value
     transition: width 0.5s ease;
 
 
+div#debug 
+    padding-top: 20px
+    box-shadow: 0 3px 5px 2px rgba(0, 0, 0, 0.699) inset;
+    text-align: center;
+    margin: auto;
+    justify-content: center;
+    display: revert
+    height: 20%;
+    width: 80%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+      
+div#debug debug-entry span 
+    margin: 5px;
+    font-size: x-large;
+      
+div#debug debug-entry.error span 
+    color: #ff4747
+    font-weight: bold;
+      
+
+div#debug debug-entry.info span 
+    color: #8f76ff;
+    
+div#debug debug-entry.success span 
+    color: #8cff69;
+      
+
+.hidden 
+    display: none;
+      
+
+input::placeholder 
+    text-align: center;
