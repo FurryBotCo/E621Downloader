@@ -69,7 +69,7 @@ export default class Utility {
 	}
 
 	static async getPosts(tags: string[], auth: string | null, page: number, lastId?: number | null, ev?: Electron.IpcMainEvent | null) {
-		if (page === 1) ev?.reply("debug", "fetch-begin", tags, !auth);
+		if (page === 1) ev?.reply("debug", "fetch-begin", tags, !!auth);
 		ev?.reply("debug", "fetch-start", tags, page);
 		const posts: {
 			id: number;
