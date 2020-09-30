@@ -103,7 +103,7 @@ async function start(tags, folder) {
 
 			case "download-finish": {
 				const [id, num, amount, ms] = args;
-				return createLogEntry(`[${num}/${amount}] Downloaded post #${id} in ${ms}ms`, "info");
+				return createLogEntry(`[${num}/${amount}] Downloaded post #${id} in ${ms}ms`, "success");
 				break;
 			}
 
