@@ -16,6 +16,6 @@ export default class Logger {
 		const d = new Date();
 		const format = ((type: string, d = new Date()) => `[${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}][${d.toString().split(" ")[4]}][${type.toUpperCase()}][${loc}]`);
 		fs.appendFileSync(f, `${format(type, d)}: ${messages.join(" ")}\n`);
-		console.log(format(type, d), ":", ...messages);
+		console.log(`${format(type, d)}:`, ...messages);
 	}
 }
