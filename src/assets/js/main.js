@@ -145,7 +145,7 @@ ipcRenderer.on("progress", (ev, current, total) => {
 	document.querySelector("progress").max = total;
 });
 
-async function selectFolder() {
+async function selectSaveDirectory() {
 	if(!__filename.endsWith("settings.html")) return;
 	else {
 		const d = await dialog.showOpenDialog({
@@ -156,4 +156,21 @@ async function selectFolder() {
 		document.querySelector("input[name=saveDirectory]").value = d.filePaths[0];
 		return;
 	}
+}
+
+async function selectLogFile() {
+	if(!__filename.endsWith("settings.html")) return;
+	else {
+		const d = await dialog.showOpenDialog({
+			properties: ["openSile"],
+			defaultPath: config.logFile
+		});
+		if(!d || d.filePaths.length === 0) return alert("Please select a valid file.");
+		document.querySelector("input[name=logFIle]").value = d.filePaths[0];
+		return;
+	}
+}
+
+function updateSettings(st) {
+	ipcRenderer.send("config", st);
 }

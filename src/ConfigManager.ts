@@ -7,7 +7,7 @@ type DeepPartial<T> = {
 	[P in keyof T]?: DeepPartial<T[P]>;
 };
 
-interface Config {
+export interface ConfigProperties {
 	key: string;
 	username: string;
 	saveDirectory: string;
@@ -32,11 +32,11 @@ export default class ConfigManager {
 			Logger.debug("ConfigManager", `Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
 			fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
 		} else {
-			let c: Config;
+			let c: ConfigProperties;
 			try {
 
 				const f = this.loadFile();
-				c = YAML.safeLoad(f.toString()) as Config;
+				c = YAML.safeLoad(f.toString()) as ConfigProperties;
 			} catch (e) {
 				Logger.error("ConfigManager", e);
 				Logger.log("ConfigManager", `Recreating config file due to read error`);
@@ -53,17 +53,19 @@ export default class ConfigManager {
 		return path.resolve(dir);
 	}
 
-	static get() {
+	static get(raw?: boolean) {
 		this.setup();
 		const f = this.loadFile();
-		const c = YAML.safeLoad(f.toString()) as Config;
-		c.saveDirectory = this.parseDirectory(c.saveDirectory);
-		c.logFile = this.parseDirectory(c.logFile);
+		const c = YAML.safeLoad(f.toString()) as ConfigProperties;
+		if (!raw) {
+			c.saveDirectory = this.parseDirectory(c.saveDirectory);
+			c.logFile = this.parseDirectory(c.logFile);
+		}
 
 		return c;
 	}
 
-	static edit(values: DeepPartial<Config>) {
+	static edit(values: DeepPartial<ConfigProperties>) {
 		const v = this.get();
 		const c = { ...v, ...values };
 		if (JSON.stringify(v) === JSON.stringify(c)) return;

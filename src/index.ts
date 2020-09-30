@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import windowStateKeeper from "electron-window-state";
-import ConfigManager from "./ConfigManager";
+import ConfigManager, { ConfigProperties } from "./ConfigManager";
 import Logger from "./Logger";
 import Utility from "./Utility";
 
@@ -15,6 +15,11 @@ ipcMain
 		Logger.debug("Main", `Received autocomplete request with the id "${id}" for the tag "${tag}"`);
 		const v = await Utility.autocompleteRequest(tag);
 		return ev.reply("autocomplete-response", id, v);
+	})
+	.on("config", (ev, config: ConfigProperties) => {
+		Logger.debug("Main", ["Config Update", require("util").inspect(config, { depth: null })]);
+		ConfigManager.edit(config);
+		return ev.reply("config", ConfigManager.get());
 	})
 	.on("start", (ev, tags: string[], folder: string) => Utility.startDownload(ev, tags, folder, window))
 	.on("log", (ev, type: string, ...messages: string[]) => {
@@ -45,6 +50,7 @@ app
 
 		window.webContents.on("dom-ready", () => {
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(ConfigManager.get())};`);
+			window.webContents.executeJavaScript(`window.rawConfig = ${JSON.stringify(ConfigManager.get(true))};`);
 		});
 	})
 	.on("window-all-closed", () => {

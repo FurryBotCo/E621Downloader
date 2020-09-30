@@ -29,8 +29,15 @@
 					<tr>
 						<td class="input">
 							<label for="saveDirectory">Save Directory</label>
-							<input type="text" name="saveDirectory" placeholder="Location to save images to">
-							<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a Save Location" onclick="selectFolder()">
+							<input type="text" name="saveDirectory" placeholder="Location to save images to.">
+							<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a save location." onclick="selectSaveDirectory()">
+						</td>
+					</tr>
+					<tr>
+						<td class="input">
+							<label for="logFile">Log File</label>
+							<input type="text" name="logFile" placeholder="Location to save logs.">
+							<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a log location." onclick="selectLogFile()">
 						</td>
 					</tr>
 					<tr>
@@ -57,22 +64,45 @@
 			const key = document.querySelector("input[name=key]");
 			const username = document.querySelector("input[name=username]");
 			const saveDirectory = document.querySelector("input[name=saveDirectory]");
+			const logFile = document.querySelector("input[name=logFile]");
 			const overwriteExisting = document.querySelector("input[name=overwriteExisting]");
 
 			window.addEventListener("DOMContentLoaded", () => {
 				setTimeout(() => {
-					if(!window.config) window.location.reload();
+					if(!window.config || !window.rawConfig) window.location.reload();
 					debugLog();
 					key.value = config.key || "";
 					username.value = config.username || "";
-					saveDirectory.value = config.saveDirectory || "";
+					saveDirectory.value = rawConfig.saveDirectory || "";
+					logFile.value = rawConfig.logFile || "";
 					if(config.overwriteExisting) overwriteExisting.checked = "checked";
 				}, 100);
 			});
 			/**
 			 * @param {HTMLFormElement} e
 			 */
-			function handleSubmit(e) {}
+			function handleSubmit(e) {
+				const [
+					{ 
+						value: key
+					}, { 
+						value: username
+					}, {
+						value: saveDirectory
+					}, {
+						value: logFile
+					}, {
+						value: overwriteExisting
+					}
+				] = Array.from(e.querySelectorAll("input")).slice(0, -1);
+				updateSettings({
+					key,
+					username,
+					saveDirectory,
+					logFile,
+					overwriteExisting: overwriteExisting === "on"
+				});
+			}
 		</script>
 		<a href="./index.html" class="bottom-left"">Back</a>
 	</body>
