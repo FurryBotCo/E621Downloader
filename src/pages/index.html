@@ -50,6 +50,8 @@
         document.querySelector("div#progress").classList.add("hidden");
       }
       function createLogEntry(text, type) {
+        console.debug(text);
+        text = text.replace(/\n/g, "<br>");
         document.querySelector(
           "div#debug"
         ).innerHTML += `<debug-entry class="${type}"><span>${text}</span><br></debug-entry>`;

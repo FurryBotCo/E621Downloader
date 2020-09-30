@@ -1,6 +1,7 @@
 import * as fs from "fs-extra";
 import YAML from "js-yaml";
 import path from "path";
+import Logger from "./Logger";
 
 type DeepPartial<T> = {
 	[P in keyof T]?: DeepPartial<T[P]>;
@@ -25,10 +26,10 @@ export default class ConfigManager {
 	static setup() {
 		if (!fs.existsSync(this.FILE)) {
 			if (!fs.existsSync(this.DIR)) {
-				console.log(`Creating configuration directory "${this.DIR}"`);
+				Logger.debug("ConfigManager", `Creating configuration directory "${this.DIR}"`);
 				fs.mkdirpSync(this.DIR);
 			}
-			console.log(`Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
+			Logger.debug("ConfigManager", `Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
 			fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
 		} else {
 			let c: Config;
@@ -37,8 +38,8 @@ export default class ConfigManager {
 				const f = this.loadFile();
 				c = YAML.safeLoad(f.toString()) as Config;
 			} catch (e) {
-				console.error(e);
-				console.log(`Recreating config file due to read error`);
+				Logger.error("ConfigManager", e);
+				Logger.log("ConfigManager", `Recreating config file due to read error`);
 			}
 		}
 	}

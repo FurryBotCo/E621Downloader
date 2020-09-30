@@ -1,6 +1,25 @@
 const { ipcRenderer, remote: { dialog } } = require("electron");
 const crypto = require("crypto");
 
+const og = {
+	log: console.log,
+	error: console.error,
+	debug: console.debug,
+	info: console.info,
+	warn: console.warn
+};
+
+function log(type, ...args) {
+	og[type]?.(...args);
+	ipcRenderer.send("log", type, ...args);
+}
+
+console.log = log.bind(null, "log");
+console.error = log.bind(null, "error");
+console.debug = log.bind(null, "debug");
+console.info = log.bind(null, "info");
+console.warn = log.bind(null, "warn");
+
 function debugLog() {
 	const v = process.versions;
 	console.debug("Node Version:", v.node);
@@ -55,7 +74,7 @@ function checkLogSize() {
 async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
 	const l = (ev, type, ...args) => {
-		console.log(type, ...args);
+		// console.log(type, ...args);
 		switch(type) {
 			case "fetch-begin": {
 				const [tags, usingAuth] = args;
@@ -91,7 +110,7 @@ async function start(tags, folder) {
 
 			case "dir": {
 				const [dir] = args;
-				return createLogEntry(`Downloading to directory "${dir}"`, "info");
+				return createLogEntry(`Downloading to directory:\n"${dir}"`, "info");
 				break;
 			}
 
@@ -116,7 +135,7 @@ async function start(tags, folder) {
 	};
 	ipcRenderer.on("debug", l);
 	ipcRenderer.on("end", () => {
-		console.log("end");
+		console.debug("end");
 		ipcRenderer.off("debug", l);
 	});
 }
@@ -130,7 +149,8 @@ async function selectFolder() {
 	if(!__filename.endsWith("settings.html")) return;
 	else {
 		const d = await dialog.showOpenDialog({
-			properties: ["openDirectory"]
+			properties: ["openDirectory"],
+			defaultPath: config.saveDirectory
 		});
 		if(!d || d.filePaths.length === 0) return alert("Please select a valid folder.");
 		document.querySelector("input[name=saveDirectory]").value = d.filePaths[0];
