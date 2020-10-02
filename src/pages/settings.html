@@ -98,7 +98,7 @@
 					}, {
 						value: logFile
 					}, {
-						value: overwriteExisting
+						checked: overwriteExisting
 					}
 				] = Array.from(e.querySelectorAll("input")).slice(0, -1);
 				updateSettings({
@@ -106,7 +106,7 @@
 					username,
 					saveDirectory,
 					logFile,
-					overwriteExisting: overwriteExisting === "on"
+					overwriteExisting
 				});
 			}
 		</script>
