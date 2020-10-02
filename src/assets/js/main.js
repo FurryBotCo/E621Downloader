@@ -121,20 +121,21 @@ async function start(tags, folder) {
 			}
 
 			case "download-finish": {
-				const [id, num, amount, ms] = args;
-				return createLogEntry(`[${num}/${amount}] Downloaded post #${id} in ${ms}ms`, "success");
+				const [id, num, amount, timeMS, time] = args;
+				return createLogEntry(`[${num}/${amount}] Downloaded post #${id} in ${time}`, "success");
 				break;
 			}
 
 			case "end": {
-				const [amount, ms] = args;
-				return createLogEntry(`Finished downloading ${amount} posts in ${ms}ms`, "info");
+				const [tags, amount, timeMS, time] = args;
+				showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
+				return createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
 				break;
 			}
 		}
 	};
 	ipcRenderer.on("debug", l);
-	ipcRenderer.on("end", () => {
+	ipcRenderer.on("end", (ev, tags, len, timeMS, time) => {
 		console.debug("end");
 		ipcRenderer.off("debug", l);
 	});
@@ -173,4 +174,18 @@ async function selectLogFile() {
 
 function updateSettings(st) {
 	ipcRenderer.send("config", st);
+}
+
+/**
+ * @param {string} title
+ * @param {string} body
+ */
+function showNotification(title, body) {
+	new Notification(title, {
+		dir: "ltr",
+		body,
+		icon: "https://butts-are.cool/e621.png",
+		requireInteraction: true,
+		silent: false
+	});
 }
