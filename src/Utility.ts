@@ -197,6 +197,9 @@ export default class Utility {
 		if (!url) {
 			ev?.reply("debug", "skip", id, "no image url");
 			return;
+		} else if (fs.existsSync(`${dir}/${id}.${ext}`) && !ConfigManager.get().overwriteExisting) {
+			ev?.reply("debug", "skip", id, "file already exists");
+			return;
 		}
 		const uri = URL.parse(url);
 		const start = performance.now();

@@ -132,6 +132,11 @@ async function start(tags, folder) {
 				return createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
 				break;
 			}
+
+			case "error": {
+				const [message] = args;
+				return createLogEntry(message, "error");
+			}
 		}
 	};
 	ipcRenderer.on("debug", l);
