@@ -2,7 +2,7 @@
   "name": "e621downloader",
   "version": "1.0.0",
   "description": "Bulk download images from e621.",
-  "productName": "E621 Downloader",
+  "productName": "E621Downloader",
   "main": "build/src/index.js",
   "scripts": {
     "start": "tsc && electron-forge start",
@@ -19,12 +19,15 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "src/assets/icons/win/icon.ico",
+        "platform": "win32"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "e621downloader_ef"
+            "name": "e621downloader"
           }
         },
         {
@@ -50,13 +53,14 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.53",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.53",
     "@electron-forge/maker-zip": "^6.0.0-beta.53",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
     "@types/express": "^4.17.8",
     "@types/fs-extra": "^9.0.1",
     "@types/js-yaml": "^3.12.5",
     "@types/morgan": "^1.9.1",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "electron": "10.1.2",
+    "electron-icon-maker": "0.0.5",
     "eslint": "^7.9.0",
     "eslint-plugin-import": "^2.22.0",
     "typescript": "^4.0.3"

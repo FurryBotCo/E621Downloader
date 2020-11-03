@@ -42,8 +42,10 @@ app
 				nodeIntegration: true,
 				worldSafeExecuteJavaScript: true,
 				enableRemoteModule: true
-			}
+			},
+			icon: `${__dirname}/assets/icons/png/256x256.png`
 		});
+		window.removeMenu();
 		state.manage(window);
 		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
 		window.setBackgroundColor("#333");

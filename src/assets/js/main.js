@@ -1,5 +1,6 @@
 const { ipcRenderer, remote: { dialog } } = require("electron");
 const crypto = require("crypto");
+const util = require("util");
 
 const og = {
 	log: console.log,
@@ -11,7 +12,7 @@ const og = {
 
 function log(type, ...args) {
 	og[type]?.(...args);
-	ipcRenderer.send("log", type, ...args);
+	ipcRenderer.send("log", type, ...args.map(v => v instanceof Object ? util.inspect(v, { depth: null }) : v));
 }
 
 console.log = log.bind(null, "log");
@@ -40,14 +41,14 @@ function debugLog() {
  */
 
 async function autocompleteTags(tag) {
-	return new Promise((a,b) => {
+	return new Promise((a, b) => {
 		const id = crypto.randomBytes(8).toString("hex");
 		ipcRenderer.send("autocomplete-request", tag, id);
 		const l = ((ev, d, dt) => {
 			console.debug(`Received autocomplete response with the id "${d}"`);
-			if(d !== id) return;
+			if (d !== id) return;
 			else ipcRenderer.off("autocomplete-response", l);
-			if(dt.error) {
+			if (dt.error) {
 				const err = new Error(dt.data.message);
 				err.message = dt.data.message;
 				err.stack = dt.data.stack;
@@ -75,7 +76,7 @@ async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
 	const l = (ev, type, ...args) => {
 		// console.log(type, ...args);
-		switch(type) {
+		switch (type) {
 			case "fetch-begin": {
 				const [tags, usingAuth] = args;
 				return createLogEntry(`Starting a search with the tags "${tags.join(" ")}" (using auth: ${usingAuth ? "YES" : "NO"})`, "info");
@@ -152,26 +153,26 @@ ipcRenderer.on("progress", (ev, current, total) => {
 });
 
 async function selectSaveDirectory() {
-	if(!__filename.endsWith("settings.html")) return;
+	if (!__filename.endsWith("settings.html")) return;
 	else {
 		const d = await dialog.showOpenDialog({
 			properties: ["openDirectory"],
 			defaultPath: config.saveDirectory
 		});
-		if(!d || d.filePaths.length === 0) return alert("Please select a valid folder.");
+		if (!d || d.filePaths.length === 0) return alert("Please select a valid folder.");
 		document.querySelector("input[name=saveDirectory]").value = d.filePaths[0];
 		return;
 	}
 }
 
 async function selectLogFile() {
-	if(!__filename.endsWith("settings.html")) return;
+	if (!__filename.endsWith("settings.html")) return;
 	else {
 		const d = await dialog.showOpenDialog({
 			properties: ["openSile"],
 			defaultPath: config.logFile
 		});
-		if(!d || d.filePaths.length === 0) return alert("Please select a valid file.");
+		if (!d || d.filePaths.length === 0) return alert("Please select a valid file.");
 		document.querySelector("input[name=logFIle]").value = d.filePaths[0];
 		return;
 	}
