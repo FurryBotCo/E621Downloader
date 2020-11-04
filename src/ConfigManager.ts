@@ -2,6 +2,7 @@ import * as fs from "fs-extra";
 import YAML from "js-yaml";
 import path from "path";
 import Logger from "./Logger";
+import Utility from "./Utility";
 
 type DeepPartial<T> = {
 	[P in keyof T]?: DeepPartial<T[P]>;
@@ -13,6 +14,9 @@ export interface ConfigProperties {
 	saveDirectory: string;
 	logFile: string;
 	overwriteExisting: boolean;
+	skipFlash: boolean;
+	skipVideo: boolean;
+	blacklistedTags: string[];
 }
 
 export default class ConfigManager {
@@ -22,6 +26,11 @@ export default class ConfigManager {
 	static DEFAULT_DIR = path.resolve(ConfigManager.ROOT_DIR);
 	static DEFAULT_FILE = `${ConfigManager.DEFAULT_DIR}/config.default.yaml`;
 	static loadFile() { return fs.readFileSync(this.FILE); }
+	static loadDefault() { return fs.readFileSync(this.FILE); }
+
+	static getDefaults() {
+		return YAML.safeLoad(this.loadDefault().toString()) as ConfigProperties;
+	}
 
 	static setup() {
 		if (!fs.existsSync(this.FILE)) {
@@ -62,7 +71,7 @@ export default class ConfigManager {
 			c.logFile = this.parseDirectory(c.logFile);
 		}
 
-		return c;
+		return Utility.mergeObjects(c, this.getDefaults());
 	}
 
 	static edit(values: DeepPartial<ConfigProperties>) {

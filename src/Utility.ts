@@ -152,6 +152,7 @@ export default class Utility {
 			id: number;
 			url: string;
 			ext: string;
+			tags: string[];
 		}[] = [];
 		return new Promise<typeof posts>((a, b) => {
 			https.request({
@@ -177,7 +178,8 @@ export default class Utility {
 						posts.push(...d.posts.map(p => ({
 							id: p.id,
 							url: p.file.url,
-							ext: p.file.ext
+							ext: p.file.ext,
+							tags: Object.keys(p.tags).map(v => p.tags[v]).reduce((a, b) => a.concat(b))
 						})));
 						if (d.posts.length === 320) {
 							await new Promise((c, d) => setTimeout(c, 1e3)); // wait for 1 second (more than needed)
@@ -242,7 +244,10 @@ export default class Utility {
 		ev.reply("debug", "dir", dir);
 		for (const post of posts) {
 			const v = ++i;
-			await Utility.downloadImage(post.id, post.url, post.ext, v, posts.length, dir, ev);
+			if (c.skipFlash && post.ext === "swf") ev?.reply("debug", "skip", post.id, "Flash content.");
+			else if (c.skipVideo && post.ext === "webm") ev?.reply("debug", "skip", post.id, "Video content.");
+			else if (c.blacklistedTags.some(t => post.tags.includes(t))) ev?.reply("debug", "skip", post.id, "Blacklisted tag.");
+			else await Utility.downloadImage(post.id, post.url, post.ext, v, posts.length, dir, ev);
 			const p = (v / posts.length);
 			window.setProgressBar(p);
 			ev.reply("progress", v, posts.length);
@@ -251,5 +256,18 @@ export default class Utility {
 
 		window.setProgressBar(-1);
 		ev.reply("debug", "end", tags, posts.length, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true));
+	}
+
+	static mergeObjects<A = object, B = object>(a: A, b: B) {
+		// avoid references
+		const obj = JSON.parse(JSON.stringify(a)) as A & B;
+		for (const k of Object.keys(b)) {
+			if (b[k] instanceof Array) obj[k] = typeof a[k] === "undefined" ? b[k] : a[k];
+			else if (typeof b[k] === "object" && b[k] !== null) {
+				if (typeof a[k] !== "object" || a[k] === null) a[k] = {};
+				obj[k] = this.mergeObjects(a[k], b[k]);
+			} else obj[k] = typeof a[k] === "undefined" ? b[k] : a[k];
+		}
+		return obj;
 	}
 }

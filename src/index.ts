@@ -6,6 +6,7 @@ import Utility from "./Utility";
 
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 
+require("update-electron-app")()
 if (require("electron-squirrel-startup")) app.quit();
 
 let window: BrowserWindow, state: windowStateKeeper.State;
