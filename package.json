@@ -1,6 +1,6 @@
 {
   "name": "e621downloader",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Bulk download images from e621.",
   "productName": "E621Downloader",
   "main": "build/src/index.js",
