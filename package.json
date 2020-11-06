@@ -19,7 +19,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DonovanDMC/E621Downloader.get"
+    "url": "git+https://github.com/FurryBotCo/E621Downloader.get"
   },
   "config": {
     "forge": {
