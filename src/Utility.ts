@@ -296,7 +296,7 @@ export default class Utility {
 			current: {
 				url: cur?.html_url,
 				name: cur?.name,
-				version: pkg.version,
+				version: cur?.tag_name,
 				description: cur?.body
 			},
 			latest: {
