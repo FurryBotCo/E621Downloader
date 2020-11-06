@@ -3,6 +3,7 @@ import windowStateKeeper from "electron-window-state";
 import ConfigManager, { ConfigProperties } from "./ConfigManager";
 import Logger from "./Logger";
 import Utility from "./Utility";
+import * as fs from "fs-extra";
 
 const dev = process.argv[2] === "--dev";
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
@@ -26,7 +27,8 @@ ipcMain
 	.on("start", (ev, tags: string[], folder: string) => Utility.startDownload(ev, tags, folder, window))
 	.on("log", (ev, type: string, ...messages: string[]) => {
 		Logger[type]?.("CLIENT", messages);
-	});
+	})
+	.on("show-update", (ev, version: string) => fs.writeFileSync(`${ConfigManager.DIR}/version-check`, version));
 
 app
 	.on("ready", () => {
@@ -53,9 +55,11 @@ app
 		window.setBackgroundColor("#333");
 		if (dev) window.webContents.openDevTools();
 
-		window.webContents.on("dom-ready", () => {
+		window.webContents.on("dom-ready", async () => {
+			const v = await Utility.getRelease();
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(ConfigManager.get())};`);
 			window.webContents.executeJavaScript(`window.rawConfig = ${JSON.stringify(ConfigManager.get(true))};`);
+			window.webContents.executeJavaScript(`window.versioning = ${JSON.stringify(v)};`);
 		});
 	})
 	.on("window-all-closed", () => {

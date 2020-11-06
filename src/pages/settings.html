@@ -106,7 +106,7 @@
 			window.addEventListener("DOMContentLoaded", () => {
 				setTimeout(() => {
 					if(!window.config || !window.rawConfig) window.location.reload();
-					debugLog();
+					main();
 					key.value = config.key || "";
 					username.value = config.username || "";
 					saveDirectory.value = rawConfig.saveDirectory || "";

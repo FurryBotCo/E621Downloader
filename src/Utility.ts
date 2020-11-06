@@ -5,6 +5,7 @@ import ConfigManager from "./ConfigManager";
 import URL from "url";
 import path from "path";
 import { performance } from "perf_hooks";
+import GetReleases from "./GetReleases";
 
 interface MsResponse {
 	ms: number;
@@ -269,5 +270,42 @@ export default class Utility {
 			} else obj[k] = typeof a[k] === "undefined" ? b[k] : a[k];
 		}
 		return obj;
+	}
+
+	static async getRelease() {
+		const { data } = await GetReleases();
+		const [
+			{
+				html_url: url,
+				name,
+				tag_name: version,
+				body: description
+			}
+		] = data;
+		const cur = data.find(r => r.tag_name === pkg.version);
+		let t;
+		try {
+			t = fs.readFileSync(`${ConfigManager.DIR}/version-check`).toString();
+		} catch (e) { t = null; }
+		let showUpdate: boolean = false;
+		if (!t || version !== t) {
+			if (version !== pkg.version) showUpdate = true;
+		}
+
+		return {
+			current: {
+				url: cur?.html_url,
+				name: cur?.name,
+				version: pkg.version,
+				description: cur?.body
+			},
+			latest: {
+				url,
+				name,
+				version,
+				description
+			},
+			showUpdate
+		};
 	}
 }

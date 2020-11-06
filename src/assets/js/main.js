@@ -1,4 +1,4 @@
-const { ipcRenderer, remote: { dialog } } = require("electron");
+const { ipcRenderer, remote: { dialog }, shell } = require("electron");
 const crypto = require("crypto");
 const util = require("util");
 
@@ -21,11 +21,17 @@ console.debug = log.bind(null, "debug");
 console.info = log.bind(null, "info");
 console.warn = log.bind(null, "warn");
 
-function debugLog() {
+function main() {
 	const v = process.versions;
 	console.debug("Node Version:", v.node);
 	console.debug("Chrome Version:", v.chrome);
 	console.debug("Electron Version:", v.electron);
+	console.debug("Current Application Version:", versioning.current.version);
+	console.debug("Latest Application Version:", versioning.latest.version);
+	if (versioning.showUpdate) {
+		ipcRenderer.send("show-update", versioning.latest.version);
+		showNotification("Update Available", `A new update is available.\nVersion: ${versioning.latest.version}\nClick this to open the github page. This will not be shown again for this version.`, versioning.latest.url);
+	}
 }
 
 /**
@@ -187,13 +193,18 @@ function updateSettings(st) {
 /**
  * @param {string} title
  * @param {string} body
+ * @param {string} [url]
  */
-function showNotification(title, body) {
-	new Notification(title, {
+function showNotification(title, body, url) {
+	const n = new Notification(title, {
 		dir: "ltr",
 		body,
 		icon: "https://butts-are.cool/e621.png",
 		requireInteraction: true,
 		silent: false
+	});
+	if (url) n.onclick = ((e) => {
+		e.preventDefault();
+		shell.openExternal(url);
 	});
 }
