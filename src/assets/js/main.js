@@ -75,7 +75,7 @@ function checkLogSize() {
 async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
 	const l = (ev, type, ...args) => {
-		// console.log(type, ...args);
+		console.log(type, ...args);
 		switch (type) {
 			case "fetch-begin": {
 				const [tags, usingAuth] = args;
@@ -129,6 +129,8 @@ async function start(tags, folder) {
 
 			case "end": {
 				const [tags, amount, timeMS, time] = args;
+				console.debug("end");
+				ipcRenderer.removeListener("debug", l);
 				showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
 				return createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
 				break;
@@ -141,10 +143,6 @@ async function start(tags, folder) {
 		}
 	};
 	ipcRenderer.on("debug", l);
-	ipcRenderer.on("end", (ev, tags, len, timeMS, time) => {
-		console.debug("end");
-		ipcRenderer.off("debug", l);
-	});
 }
 
 ipcRenderer.on("progress", (ev, current, total) => {
