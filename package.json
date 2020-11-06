@@ -5,7 +5,7 @@
   "productName": "E621Downloader",
   "main": "build/src/index.js",
   "scripts": {
-    "start": "tsc && electron-forge start",
+    "start": "tsc && electron-forge start -- --dev",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",

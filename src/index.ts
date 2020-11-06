@@ -4,6 +4,7 @@ import ConfigManager, { ConfigProperties } from "./ConfigManager";
 import Logger from "./Logger";
 import Utility from "./Utility";
 
+const dev = process.argv[2] === "--dev";
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 
 require("update-electron-app")()
@@ -50,6 +51,7 @@ app
 		state.manage(window);
 		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
 		window.setBackgroundColor("#333");
+		if (dev) window.webContents.openDevTools();
 
 		window.webContents.on("dom-ready", () => {
 			window.webContents.executeJavaScript(`window.config = ${JSON.stringify(ConfigManager.get())};`);
