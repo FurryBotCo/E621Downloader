@@ -131,7 +131,11 @@ async function start(tags, folder) {
 				const [tags, amount, timeMS, time] = args;
 				console.debug("end");
 				ipcRenderer.removeListener("debug", l);
-				showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
+				if (document.hasFocus()) console.debug("Not showing notification as window is focused.");
+				else {
+					showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
+					console.debug("Showed notification.");
+				}
 				return createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
 				break;
 			}
