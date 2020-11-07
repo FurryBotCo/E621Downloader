@@ -103,20 +103,17 @@
 			const skipVideo = document.querySelector("input[name=skipVideo]");
 			const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
 
-			window.addEventListener("DOMContentLoaded", () => {
-				setTimeout(() => {
-					if(!window.config || !window.rawConfig) window.location.reload();
-					main();
-					key.value = config.key || "";
-					username.value = config.username || "";
-					saveDirectory.value = rawConfig.saveDirectory || "";
-					logFile.value = rawConfig.logFile || "";
-					if(config.overwriteExisting) overwriteExisting.checked = "checked";
-					if(config.skipFlash) skipFlash.checked = "checked";
-					if(config.skipVideo) skipVideo.checked = "checked";
-					blacklistedTags.value = config.blacklistedTags.join(" ");
-				}, 100);
-			});
+			function setupDone() {
+				key.value = config.key || "";
+				username.value = config.username || "";
+				saveDirectory.value = rawConfig.saveDirectory || "";
+				logFile.value = rawConfig.logFile || "";
+				if(config.overwriteExisting) overwriteExisting.checked = "checked";
+				if(config.skipFlash) skipFlash.checked = "checked";
+				if(config.skipVideo) skipVideo.checked = "checked";
+				blacklistedTags.value = config.blacklistedTags.join(" ");
+			}
+			
 			/**
 			 * @param {HTMLFormElement} e
 			 */

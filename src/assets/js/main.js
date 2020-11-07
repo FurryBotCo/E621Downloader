@@ -21,7 +21,24 @@ console.debug = log.bind(null, "debug");
 console.info = log.bind(null, "info");
 console.warn = log.bind(null, "warn");
 
-function main() {
+function setup(config, rawConfig, versioning) {
+	Object.defineProperty(window, "config", {
+		value: config,
+		enumerable: true,
+		configurable: false
+	});
+
+	Object.defineProperty(window, "rawConfig", {
+		value: rawConfig,
+		enumerable: true,
+		configurable: false
+	});
+
+	Object.defineProperty(window, "versioning", {
+		value: versioning,
+		enumerable: true,
+		configurable: false
+	});
 	const v = process.versions;
 	console.debug("Node Version:", v.node);
 	console.debug("Chrome Version:", v.chrome);
@@ -32,6 +49,7 @@ function main() {
 		ipcRenderer.send("show-update", versioning.latest.version);
 		showNotification("Update Available", `A new update is available.\nVersion: ${versioning.latest.version}\nClick this to open the github page. This will not be shown again for this version.`, versioning.latest.url);
 	}
+	if (typeof setupDone === "function") setupDone();
 }
 
 /**

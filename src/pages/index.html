@@ -99,12 +99,11 @@
       window.addEventListener("error", (ev) => {
         createLogEntry(ev.error.stack, "error");
       });
-      window.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-          if (!window.config) window.location.reload();
-          main();
-        }, 100);
-      });
+      
+      function setupDone() {
+
+      }
+
       /**
        * @param {HTMLFormElement} e
        */
