@@ -282,7 +282,7 @@ export default class Utility {
 				body: description
 			}
 		] = data;
-		const cur = data.find(r => r.tag_name === pkg.version);
+		const cur = data.find(r => r.tag_name === `v${pkg.version}`);
 		let t;
 		try {
 			t = fs.readFileSync(`${ConfigManager.DIR}/version-check`).toString();
