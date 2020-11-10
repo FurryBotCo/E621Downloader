@@ -13,11 +13,18 @@ export default class Logger {
 	static warn(loc: string, message: MessageType) { return this._log("warn", loc, message); }
 
 	private static _log(type: string, loc: string, messages: MessageType) {
+		console.log("1");
 		if (!(messages instanceof Array)) messages = [messages];
+		console.log("2");
 		const f = ConfigManager.get().logFile;
+		console.log("3");
 		const d = new Date();
+		console.log("4");
 		const format = ((type: string, d = new Date()) => `[${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}][${d.toString().split(" ")[4]}][${type.toUpperCase()}][${loc}]`);
+		console.log("5");
 		fs.appendFileSync(f, `${format(type, d)}: ${messages.join(" ")}\n`);
+		console.log("6");
 		console.log(`${format(type, d)}:`, ...messages);
+		console.log("7");
 	}
 }

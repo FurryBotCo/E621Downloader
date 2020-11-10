@@ -3,6 +3,8 @@ import YAML from "js-yaml";
 import path from "path";
 import Logger from "./Logger";
 import Utility from "./Utility";
+import deasync from "deasync";
+import * as https from "https";
 
 type DeepPartial<T> = {
 	[P in keyof T]?: DeepPartial<T[P]>;
@@ -23,34 +25,64 @@ export default class ConfigManager {
 	static ROOT_DIR = path.resolve(`${__dirname}/../${__filename.endsWith("ts") ? "" : "../"}`);
 	static DIR = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/E621Downloader`);
 	static FILE = `${ConfigManager.DIR}/config.yaml`;
-	static DEFAULT_DIR = path.resolve(ConfigManager.ROOT_DIR);
-	static DEFAULT_FILE = `${ConfigManager.DEFAULT_DIR}/config.default.yaml`;
+	static DEFAULT_FILE = `${ConfigManager.DIR}/config.default.yaml`;
 	static loadFile() { return fs.readFileSync(this.FILE); }
-	static loadDefault() { return fs.readFileSync(this.FILE); }
+	static loadDefault() { return fs.readFileSync(this.DEFAULT_FILE); }
+	private static _cache: ConfigProperties;
 
-	static getDefaults() {
-		return YAML.safeLoad(this.loadDefault().toString()) as ConfigProperties;
+	static getDefaults(): ConfigProperties {
+		if (fs.existsSync(this.DEFAULT_FILE)) return YAML.safeLoad(this.loadDefault().toString()) as ConfigProperties;
+		return deasync(async (cb) => {
+			const v = await new Promise<Buffer>((a, b) => {
+				return https.request({
+					hostname: "raw.githubusercontent.com",
+					path: "/FurryBotCo/E621Downloader/master/config.default.yaml",
+					protocol: "https:",
+					port: 443
+				}, (res) => {
+					const data: Buffer[] = [];
+
+					res
+						.on("data", (d) => data.push(d))
+						.on("error", (err) => b(err))
+						.on("end", () => a(Buffer.concat(data)));
+				})
+					.end();
+			});
+
+			const j = YAML.safeLoad(v.toString()) as ConfigProperties;
+			fs.writeFileSync(this.DEFAULT_FILE, v.toString());
+			cb(null, j);
+		})();
 	}
 
 	static setup() {
-		if (!fs.existsSync(this.FILE)) {
-			if (!fs.existsSync(this.DIR)) {
-				Logger.debug("ConfigManager", `Creating configuration directory "${this.DIR}"`);
-				fs.mkdirpSync(this.DIR);
-			}
-			Logger.debug("ConfigManager", `Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
-			fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
-		} else {
-			let c: ConfigProperties;
-			try {
+		deasync((cb) => {
+			this.getDefaults();
+			if (this._cache) return this._cache;
+			if (!fs.existsSync(this.FILE)) {
+				if (!fs.existsSync(this.DIR)) {
+					Logger.debug("ConfigManager", `Creating configuration directory "${this.DIR}"`);
+					fs.mkdirpSync(this.DIR);
+				}
+				Logger.debug("ConfigManager", `Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
+				fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
+			} else {
+				// attempy to load to make sure it's good
+				try {
 
-				const f = this.loadFile();
-				c = YAML.safeLoad(f.toString()) as ConfigProperties;
-			} catch (e) {
-				Logger.error("ConfigManager", e);
-				Logger.log("ConfigManager", `Recreating config file due to read error`);
+					const f = this.loadFile();
+					YAML.safeLoad(f.toString()) as ConfigProperties;
+				} catch (e) {
+					Logger.error("ConfigManager", e);
+					Logger.log("ConfigManager", `Recreating config file due to read error`);
+					fs.unlinkSync(this.FILE);
+					this.setup();
+					return cb(null);
+				}
 			}
-		}
+			return cb(null);
+		})();
 	}
 
 	static parseDirectory(dir: string) {
@@ -58,14 +90,19 @@ export default class ConfigManager {
 			dir = `${this.DIR}/${dir}`;
 		}
 		const v = { ...process.env, CONFIG: this.DIR };
-		for (const k of Object.keys(v)) dir = dir.replace(new RegExp(process.platform === "win32" ? `%${k}%` : `$${k}`, "gi"), v[k]!);
+		for (const k of Object.keys(v)) dir = dir.replace(new RegExp(`%${k}%`, "gi"), v[k]!);
 		return path.resolve(dir);
 	}
 
 	static get(raw?: boolean) {
-		this.setup();
-		const f = this.loadFile();
-		const c = YAML.safeLoad(f.toString()) as ConfigProperties;
+		let c: ConfigProperties
+		if (new Error().stack?.indexOf("Logger") !== -1) {
+			c = this.getDefaults();
+		} else {
+			this.setup();
+			const f = this.loadFile();
+			c = YAML.safeLoad(f.toString()) as ConfigProperties;
+		}
 		if (!raw) {
 			c.saveDirectory = this.parseDirectory(c.saveDirectory);
 			c.logFile = this.parseDirectory(c.logFile);

@@ -1,3 +1,4 @@
+/// <reference types="electron" />
 import * as pkg from "../package.json";
 import * as https from "https";
 import * as fs from "fs-extra";
@@ -6,6 +7,8 @@ import URL from "url";
 import path from "path";
 import { performance } from "perf_hooks";
 import GetReleases from "./GetReleases";
+import ts from "typescript";
+import JSON5 from "json5";
 
 interface MsResponse {
 	ms: number;
@@ -207,7 +210,7 @@ export default class Utility {
 		const uri = URL.parse(url);
 		const start = performance.now();
 		ev?.reply("debug", "download-start", id);
-		return new Promise((a, b) => {
+		return new Promise<void>((a, b) => {
 			https.request({
 				method: "GET",
 				hostname: uri.hostname,
@@ -307,5 +310,55 @@ export default class Utility {
 			},
 			showUpdate
 		};
+	}
+
+	/**
+	 * Get our tsconfig file in a json format.
+	 *
+	 * @static
+	 * @param {(string | null)} [file] - A file to read from.
+	 * @returns {ts.TranspileOptions}
+	 * @memberof Internal
+	 * @example Internal.getTSConfig();
+	 * @example Internal.getTSConfig("/opt/FurryBot/tsconfig.json");
+	 */
+	static getTSConfig(file?: string | null) {
+		if (!file) file = `${__dirname}/${__filename.endsWith(".ts") ? "" : "../"}../tsconfig.json`;
+		const c = JSON5.parse(fs.readFileSync(file).toString());
+		return {
+			...c,
+			compilerOptions: {
+				...c.compilerOptions,
+				target: ts.ScriptTarget.ESNext,
+				moduleResolution: ts.ModuleResolutionKind.NodeJs,
+				module: ts.ModuleKind.CommonJS,
+				lib: [
+					"lib.es2015.d.ts",
+					"lib.es2016.d.ts",
+					"lib.es2017.d.ts",
+					"lib.es2018.d.ts",
+					"lib.es2019.d.ts",
+					"lib.es2020.d.ts",
+					"lib.esnext.d.ts"
+				]
+			}
+		} as ts.TranspileOptions;
+	}
+
+	/**
+	 * Transpile a single file, returning the transpiled contents.
+	 *
+	 * @static
+	 * @param {string} mod - The code to transpile
+	 * @param {(ts.TranspileOptions | string)} [tsconfig] - the tsconfig to use
+	 * @returns {string}
+	 * @memberof Internal
+	 * @example Internal.transpile(fs.readFileSync("/opt/FurryBot/index.ts"));
+	 * @example Internal.transpile(fs.readFileSync("/opt/FurryBot/index.ts"), "/opt/FurryBot/tsconfig.json");
+	 */
+	static transpile(mod: string, tsconfig?: ts.TranspileOptions | string) {
+		const cnf = typeof tsconfig === "object" ? tsconfig : this.getTSConfig(tsconfig || null);
+
+		return ts.transpileModule(mod, cnf).outputText;
 	}
 }
