@@ -6,7 +6,6 @@ import ConfigManager from "./ConfigManager";
 import URL from "url";
 import path from "path";
 import { performance } from "perf_hooks";
-import GetReleases from "./GetReleases";
 
 interface MsResponse {
 	ms: number;
@@ -288,39 +287,60 @@ export default class Utility {
 	}
 
 	static async getRelease() {
-		const { data } = await GetReleases();
-		const [
-			{
-				html_url: url,
-				name,
-				tag_name: version,
-				body: description
+		const {
+			data: {
+				current,
+				latest,
+				upToDate
 			}
-		] = data;
-		const cur = data.find(r => r.tag_name === `v${pkg.version}`);
-		let t;
-		try {
-			t = fs.readFileSync(`${ConfigManager.DIR}/version-check`).toString();
-		} catch (e) { t = null; }
-		let showUpdate: boolean = false;
-		if (!t || version !== t) {
-			if (version !== pkg.version) showUpdate = true;
+		} = await new Promise<{
+			success: boolean;
+			data: {
+				[k in "current" | "latest"]: {
+					// there is A LOT more but we don't care about it here
+					url: string;
+					name: string;
+					tag_name: string;
+					description: string;
+				};
+			} & {
+				upToDate: boolean;
+			};
+		}>((a, b) => {
+			https.request({
+				method: "GET",
+				hostname: "e621downloader.furrybot.co",
+				path: `/updates?version=v${pkg.version}`,
+				port: 443,
+				protocol: "https:",
+				headers: {
+					"User-Agent": `E621Downloader/v${pkg.version} (https://e621downloader.furrybot.co)`,
+					"Accept": "application/json"
+				}
+			}, (res) => {
+				const data: Buffer[] = [];
+				res
+					.on("data", (d) => data.push(d))
+					.on("error", b)
+					.on("end", () => a(JSON.parse(Buffer.concat(data).toString())));
+			})
+				.end();
+		});
+
+		let showUpdate = false;
+		if (!upToDate) {
+			const f = `${ConfigManager.DIR}/version-check`;
+			if (fs.existsSync(f)) {
+				const v = fs.readFileSync(f).toString();
+				if (v !== latest.tag_name) showUpdate = true;
+			} else showUpdate = true;
 		}
 
 		return {
-			current: {
-				url: cur?.html_url,
-				name: cur?.name,
-				version: cur?.tag_name,
-				description: cur?.body
-			},
-			latest: {
-				url,
-				name,
-				version,
-				description
-			},
-			showUpdate
+			current,
+			latest,
+			showUpdate,
+			upToDate
 		};
 	}
 }
