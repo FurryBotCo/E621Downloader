@@ -5,6 +5,7 @@ import Logger from "./Logger";
 import Utility from "./Utility";
 import deasync from "deasync";
 import * as https from "https";
+import { app } from "electron";
 
 type DeepPartial<T> = {
 	[P in keyof T]?: DeepPartial<T[P]>;
@@ -24,7 +25,7 @@ export interface ConfigProperties {
 
 export default class ConfigManager {
 	static ROOT_DIR = path.resolve(`${__dirname}/../${__filename.endsWith("ts") ? "" : "../"}`);
-	static DIR = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/e621downloader`);
+	static DIR = app.getPath("userData");
 	static FILE = `${ConfigManager.DIR}/config.yaml`;
 	static DEFAULT_FILE = `${ConfigManager.DIR}/config.default.yaml`;
 	static loadFile() { return fs.readFileSync(this.FILE); }
