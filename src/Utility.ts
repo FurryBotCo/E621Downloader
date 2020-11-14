@@ -246,7 +246,20 @@ export default class Utility {
 		const posts = await Utility.getPosts(tags, auth, 1, null, ev);
 		let i = 0;
 		ev.reply("debug", "dir", dir);
+		const cache: {
+			[k: string]: number[];
+		} = c.useCache ? {} : fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {};
 		for (const post of posts) {
+			if (c.useCache) {
+				console.log(cache[tags.join(" ").toLowerCase()].length)
+				if (!cache[tags.join(" ").toLowerCase()]) cache[tags.join(" ").toLowerCase()] = [post.id];
+				else if (!cache[tags.join(" ").toLowerCase()].includes(post.id)) cache[tags.join(" ").toLowerCase()].push(post.id);
+				else {
+					3
+					ev?.reply("debug", "skip", post.id, "Post is in cache list.");
+					continue;
+				}
+			}
 			const v = ++i;
 			if (c.skipFlash && post.ext === "swf") ev?.reply("debug", "skip", post.id, "Flash content.");
 			else if (c.skipVideo && post.ext === "webm") ev?.reply("debug", "skip", post.id, "Video content.");
@@ -258,6 +271,7 @@ export default class Utility {
 		}
 		const end = performance.now();
 
+		if (c.useCache) fs.writeFileSync(`${c.saveDirectory}/cache.json`, JSON.stringify(cache, null, "\t"));
 		window.setProgressBar(-1);
 		ev.reply("debug", "end", tags, posts.length, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true));
 	}

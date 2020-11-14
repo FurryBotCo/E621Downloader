@@ -3,6 +3,7 @@ username: ""
 saveDirectory: "%CONFIG%/Files"
 logFile: "%CONFIG%/out.log"
 overwriteExisting: true
+useCache: true
 skipFlash: false
 skipVideo: false
 blacklistedTags: []

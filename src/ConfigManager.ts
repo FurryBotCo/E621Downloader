@@ -16,6 +16,7 @@ export interface ConfigProperties {
 	saveDirectory: string;
 	logFile: string;
 	overwriteExisting: boolean;
+	useCache: boolean;
 	skipFlash: boolean;
 	skipVideo: boolean;
 	blacklistedTags: string[];
@@ -23,7 +24,7 @@ export interface ConfigProperties {
 
 export default class ConfigManager {
 	static ROOT_DIR = path.resolve(`${__dirname}/../${__filename.endsWith("ts") ? "" : "../"}`);
-	static DIR = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/E621Downloader`);
+	static DIR = path.resolve(`${process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config")}/e621downloader`);
 	static FILE = `${ConfigManager.DIR}/config.yaml`;
 	static DEFAULT_FILE = `${ConfigManager.DIR}/config.default.yaml`;
 	static loadFile() { return fs.readFileSync(this.FILE); }

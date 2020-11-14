@@ -59,6 +59,17 @@
 					</tr>
 					<tr>
 						<td>
+							<label for="useCache">Use Cache</label>
+							<br>
+							<br>
+							<label class="switch">
+								<input name="useCache" type="checkbox">
+								<span class="slider round"></span>
+							  </label>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<label for="skipFlash">Skip Flash Content</label>
 							<br>
 							<br>
@@ -99,6 +110,7 @@
 			const saveDirectory = document.querySelector("input[name=saveDirectory]");
 			const logFile = document.querySelector("input[name=logFile]");
 			const overwriteExisting = document.querySelector("input[name=overwriteExisting]");
+			const useCache = document.querySelector("input[name=overwriteExisting]");
 			const skipFlash = document.querySelector("input[name=skipFlash]");
 			const skipVideo = document.querySelector("input[name=skipVideo]");
 			const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
@@ -109,6 +121,7 @@
 				saveDirectory.value = rawConfig.saveDirectory || "";
 				logFile.value = rawConfig.logFile || "";
 				if(config.overwriteExisting) overwriteExisting.checked = "checked";
+				if(config.useCache) useCache.checked = "checked";
 				if(config.skipFlash) skipFlash.checked = "checked";
 				if(config.skipVideo) skipVideo.checked = "checked";
 				blacklistedTags.value = config.blacklistedTags.join(" ");
@@ -130,6 +143,8 @@
 					}, {
 						checked: overwriteExisting
 					}, {
+						checked: useCache
+					}, {
 						checked: skipFlash
 					}, {
 						checked: skipVideo
@@ -143,6 +158,7 @@
 					saveDirectory,
 					logFile,
 					overwriteExisting,
+					useCache,
 					skipFlash,
 					skipVideo,
 					blacklistedTags: blT.split(" ")
