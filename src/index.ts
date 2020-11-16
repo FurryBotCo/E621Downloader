@@ -4,11 +4,11 @@ import ConfigManager, { ConfigProperties } from "./ConfigManager";
 import Logger from "./Logger";
 import Utility from "./Utility";
 import * as fs from "fs-extra";
-
-const dev = process.argv[2] === "--dev";
+const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
+const dev = args.includes("--dev");
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
+Logger.debug("Main", `Development Mode: ${dev ? "Yes" : "No"}`);
 
-require("update-electron-app")()
 if (require("electron-squirrel-startup")) app.quit();
 
 let window: BrowserWindow, state: windowStateKeeper.State;
@@ -28,7 +28,12 @@ ipcMain
 	.on("log", (ev, type: string, ...messages: string[]) =>
 		Logger[type]?.("CLIENT", messages)
 	)
-	.on("show-update", (ev, version: string) => fs.writeFileSync(`${ConfigManager.DIR}/version-check`, version));
+	.on("show-update", (ev, version: string) => fs.writeFileSync(`${ConfigManager.DIR}/version-check`, version))
+	.on("setup", async(ev) => {
+		const v = await Utility.getRelease();
+		ev.reply("setup", ConfigManager.get(), ConfigManager.get(true), v);
+	})
+	.on("open-dev-tools", (ev) => window.webContents.openDevTools());
 
 app
 	.on("ready", async () => {
@@ -45,7 +50,8 @@ app
 			webPreferences: {
 				nodeIntegration: true,
 				worldSafeExecuteJavaScript: true,
-				enableRemoteModule: true
+				enableRemoteModule: true,
+				contextIsolation: false
 			},
 			icon: `${__dirname}/assets/icons/png/256x256.png`
 		});
@@ -54,11 +60,6 @@ app
 		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
 		window.setBackgroundColor("#333");
 		if (dev) window.webContents.openDevTools();
-		const v = await Utility.getRelease();
-
-		window.webContents.on("dom-ready", () => {
-			window.webContents.executeJavaScript(`window.setup(${JSON.stringify(ConfigManager.get())}, ${JSON.stringify(ConfigManager.get(true))}, ${JSON.stringify(v)})`);
-		});
 	})
 	.on("window-all-closed", () => {
 		if (process.platform !== "darwin") app.quit();

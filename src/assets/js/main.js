@@ -1,6 +1,11 @@
 const { ipcRenderer, remote: { dialog }, shell } = require("electron");
 const crypto = require("crypto");
 const util = require("util");
+ipcRenderer.on("error", (ev, err) => {
+	createLogEntry(err, "error");
+	ipcRenderer.removeAllListeners("debug");
+});
+
 
 const og = {
 	log: console.log,
@@ -21,36 +26,45 @@ console.debug = log.bind(null, "debug");
 console.info = log.bind(null, "info");
 console.warn = log.bind(null, "warn");
 
-function setup(config, rawConfig, versioning) {
-	Object.defineProperty(window, "config", {
-		value: config,
-		enumerable: true,
-		configurable: false
-	});
+async function setup() {
+	await new Promise((a,b) => {
+		ipcRenderer.send("setup");
+		ipcRenderer.once("setup", (ev, config, rawConfig,versioning) => {
 
-	Object.defineProperty(window, "rawConfig", {
-		value: rawConfig,
-		enumerable: true,
-		configurable: false
-	});
+			Object.defineProperty(window, "config", {
+				value: config,
+				enumerable: true,
+				configurable: false
+			});
 
-	Object.defineProperty(window, "versioning", {
-		value: versioning,
-		enumerable: true,
-		configurable: false
+			Object.defineProperty(window, "rawConfig", {
+				value: rawConfig,
+				enumerable: true,
+				configurable: false
+			});
+
+			Object.defineProperty(window, "versioning", {
+				value: versioning,
+				enumerable: true,
+				configurable: false
+			});
+
+			return a();
+		});
 	});
 	const v = process.versions;
 	console.debug("Node Version:", v.node);
 	console.debug("Chrome Version:", v.chrome);
 	console.debug("Electron Version:", v.electron);
-	console.debug("Current Application Version:", versioning.current.tag_name);
+	console.debug("Current Application Version:", versioning.current?.tag_name);
 	console.debug("Latest Application Version:", versioning.latest.tag_name);
 	if (versioning.showUpdate) {
 		ipcRenderer.send("show-update", versioning.latest.tag_name);
 		showNotification("Update Available", `A new update is available.\nVersion: ${versioning.latest.tag_name}\nClick this to open the github page. This will not be shown again for this version.`, versioning.latest.html_url);
 	}
-	if (typeof setupDone === "function") setupDone();
 }
+
+setup().then(() => typeof setupDone === "function" ? setupDone() : null);
 
 /**
  * @typedef {Object} AutoCompleteEntry
