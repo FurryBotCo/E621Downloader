@@ -174,6 +174,11 @@ export default class Utility {
 					.on("error", (err) => b(err))
 					.on("end", async () => {
 						const d = JSON.parse(Buffer.concat(data).toString());
+						if (d.success === false) {
+							console.error(d);
+							if (d.message === "SessionLoader::AuthenticationFailure") return ev?.reply("error", "Authentication failed.");
+							else return ev?.reply("error", d.message, d);
+						}
 						ev?.reply("debug", "fetch-receive", tags, page, d.posts.length);
 
 						posts.push(...d.posts.map(p => ({
@@ -248,11 +253,9 @@ export default class Utility {
 		} = c.useCache ? {} : fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {};
 		for (const post of posts) {
 			if (c.useCache) {
-				console.log(cache[tags.join(" ").toLowerCase()].length)
 				if (!cache[tags.join(" ").toLowerCase()]) cache[tags.join(" ").toLowerCase()] = [post.id];
 				else if (!cache[tags.join(" ").toLowerCase()].includes(post.id)) cache[tags.join(" ").toLowerCase()].push(post.id);
 				else {
-					3
 					ev?.reply("debug", "skip", post.id, "Post is in cache list.");
 					continue;
 				}
@@ -337,7 +340,12 @@ export default class Utility {
 		}
 
 		return {
-			current,
+			current: current || {
+				url: null,
+				name: `v${pkg.version}`,
+				tag_name: `v${pkg.version}`,
+				description: "Unknown Version."
+			},
 			latest,
 			showUpdate,
 			upToDate
