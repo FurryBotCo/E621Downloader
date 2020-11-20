@@ -5,9 +5,15 @@ import Logger from "./Logger";
 import Utility from "./Utility";
 import * as fs from "fs-extra";
 import Analytics from "./Analytics";
+import pkg from "../package.json";
 import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
 const dev = args.includes("--dev");
+if(["-v", "--version"].some(v => args.includes(v))) {
+	if(process.stdout.writable) process.stdout.write(`v${pkg.version}\n`);
+	process.exit(0);
+}
+
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 Logger.debug("Main", `Development Mode: ${dev ? "Yes" : "No"}`);
 
