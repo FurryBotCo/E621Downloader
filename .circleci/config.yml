@@ -61,10 +61,17 @@ jobs:
           command: npm run make
       - store_artifacts:
           path: ~/repo/out/make
-
+  publish:
+    docker:
+      - image: circleci/golang:1.8
+    steps:
+      - run:
+          name: Publish Artifacts
+          command: ls ./artifacts
 workflows:
   version: 2
   main:
     jobs:
       - build-ubuntu
       - build-windows
+      - publish
