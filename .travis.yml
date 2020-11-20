@@ -1,44 +1,22 @@
-sudo: required
-dist: trusty
-
-language: c
-
-matrix:
-  include:
-    - os: linux
-      env: CC=clang CXX=clang++ npm_config_clang=1
-      compiler: clang
-
-node_js:
-  - 15
-
+language: node_js
+node_js: node
+os:
+  - linux
+  - windows
 cache:
   directories:
     - node_modules
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-      - icnsutils
-      - graphicsmagick
-      - libgnome-keyring-dev
-      - xz-utils
-      - xorriso
-      - xvfb
-
-install:
-  - nvm install 15.1.0
-  - npm install -D
-  - export DISPLAY=':99.0'
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start &
-  - sleep 3
-
-script:
+before_install:
+  - npm i -g npm
+  - npm --version
+before_deploy:
+  - npm install -g @electron-forge/cli
   - npm run make
+deploy:
+  provider: releases
+  file_glob: true
+  file: out/make/*
+  overwrite: true
+  skip_cleanup: true
+  prerelease: true
+  draft: true
