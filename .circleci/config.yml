@@ -49,10 +49,10 @@ jobs:
       #         command: "npm i -g npm"
       - run:
           name: NPM Version
-          command: "sudo npm -v"
+          command: "npm -v"
       - run:
           name: Node Version
-          command: "sudo node -v"
+          command: "node -v"
       - run:
           name: Install Dependencies
           command: npm i -D
