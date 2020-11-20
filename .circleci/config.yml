@@ -50,3 +50,10 @@ jobs:
           command: npm run make
       - store_artifacts:
           path: ~/repo/out/make
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build-ubuntu
+      - build-windows
