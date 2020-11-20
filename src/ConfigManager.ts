@@ -21,6 +21,8 @@ export interface ConfigProperties {
 	skipFlash: boolean;
 	skipVideo: boolean;
 	blacklistedTags: string[];
+	analyticsId: null | string;
+	analytics: boolean;
 }
 
 export default class ConfigManager {
@@ -70,10 +72,11 @@ export default class ConfigManager {
 				Logger.debug("ConfigManager", `Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
 				fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
 			} else {
-				// attempy to load to make sure it's good
+				// attempt to load to make sure it's good
 				try {
 
 					const f = this.loadFile();
+					// tslint:disable-next-line no-unused-expression
 					YAML.safeLoad(f.toString()) as ConfigProperties;
 				} catch (e) {
 					Logger.error("ConfigManager", e);
@@ -97,7 +100,7 @@ export default class ConfigManager {
 	}
 
 	static get(raw?: boolean) {
-		let c: ConfigProperties
+		let c: ConfigProperties;
 		if (new Error().stack?.indexOf("Logger") !== -1) {
 			c = this.getDefaults();
 		} else {

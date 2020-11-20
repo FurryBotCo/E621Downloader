@@ -91,6 +91,17 @@
 						</td>
 					</tr>
 					<tr>
+						<td>
+							<label for="analytics">Allow Anonymous Analytics</label>
+							<br>
+							<br>
+							<label class="switch">
+								<input name="analytics" type="checkbox">
+								<span class="slider round"></span>
+							  </label>
+						</td>
+					</tr>
+					<tr>
 						<td class="input">
 							<label for="blacklistedTags">Blacklisted Tags (Space Separated)</label>
 							<input type="text" name="blacklistedTags" placeholder="Any tags you want to globally skip.">
@@ -113,6 +124,7 @@
 			const useCache = document.querySelector("input[name=overwriteExisting]");
 			const skipFlash = document.querySelector("input[name=skipFlash]");
 			const skipVideo = document.querySelector("input[name=skipVideo]");
+			const analytics = document.querySelector("input[name=analytics]");
 			const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
 
 			function setupDone() {
@@ -124,6 +136,7 @@
 				if(config.useCache) useCache.checked = "checked";
 				if(config.skipFlash) skipFlash.checked = "checked";
 				if(config.skipVideo) skipVideo.checked = "checked";
+				if(config.analytics) analytics.checked = "checked";
 				blacklistedTags.value = config.blacklistedTags.join(" ");
 			}
 			
@@ -149,6 +162,8 @@
 					}, {
 						checked: skipVideo
 					}, {
+						checked: analytics
+					}, {
 						value: blT
 					}
 				] = Array.from(e.querySelectorAll("input")).slice(0, -1);
@@ -161,10 +176,11 @@
 					useCache,
 					skipFlash,
 					skipVideo,
+					analytics,
 					blacklistedTags: blT.split(" ")
 				});
 			}
 		</script>
-		<a href="./index.html" class="bottom-left"">Back</a>
+		<a href="./index.html" class="bottom-left">Back</a>
 	</body>
 </html>
