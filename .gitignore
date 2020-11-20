@@ -85,9 +85,6 @@ typings/
 # Webpack
 .webpack/
 
-# Electron-Forge
-out/
-
 # application things
 out/
 build/
