@@ -37,9 +37,6 @@ jobs:
       - run:
           name: Generate Builds
           command: npm run make
-      - run:
-          name: fuck off
-          command: ls .
       - store_artifacts:
           path: ~/repo/out/make
   build-windows:
@@ -61,6 +58,9 @@ jobs:
       - run:
           name: Generate Builds
           command: npm run make
+      - run:
+          name: fuck off
+          command: ls .
       - store_artifacts:
           path: ~/repo/out/make
   publish:
