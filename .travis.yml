@@ -6,6 +6,11 @@ os:
 cache:
   directories:
     - node_modules
+addons:
+  apt:
+    packages:
+      - dpkg
+      - fakeroot
 before_install:
   - npm i -g npm
   - npm --version
