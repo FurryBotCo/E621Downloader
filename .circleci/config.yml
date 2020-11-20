@@ -1,9 +1,13 @@
 version: 2.1
+
+orbs:
+  win: circleci/windows@2.2.0
+
 jobs:
-  build:
+  build-ubuntu:
     working_directory: ~/repo
     docker:
-      - image: circleci/node:11
+      - image: circleci/node:15
     steps:
       - checkout
       - run:
@@ -28,5 +32,21 @@ jobs:
           name: Generate Builds
           command: npm run make
 
+      - store_artifacts:
+          path: ~/repo/out/make
+  build-windows:
+    executor: win/default
+
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: "npm i -g npm"
+      - run:
+          name: Install Dependencies
+          command: npm i -D
+      - run:
+          name: Generate Builds
+          command: npm run make
       - store_artifacts:
           path: ~/repo/out/make
