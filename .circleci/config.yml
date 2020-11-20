@@ -13,6 +13,12 @@ jobs:
       - run:
           name: Update NPM
           command: "sudo npm i -g npm"
+      - run:
+          name: NPM Version
+          command: "sudo npm -v"
+      - run:
+          name: Node Version
+          command: "sudo node -v"
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
@@ -38,9 +44,15 @@ jobs:
     executor: win/default
     steps:
       - checkout
+      #     - run:
+      #         name: Update NPM
+      #         command: "npm i -g npm"
       - run:
-          name: Update NPM
-          command: "npm i -g npm"
+          name: NPM Version
+          command: "sudo npm -v"
+      - run:
+          name: Node Version
+          command: "sudo node -v"
       - run:
           name: Install Dependencies
           command: npm i -D
