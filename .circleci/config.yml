@@ -7,7 +7,7 @@ jobs:
   build-ubuntu:
     working_directory: ~/repo
     docker:
-      - image: circleci/node:15
+      - image: circleci/node:14
     steps:
       - checkout
       - run:
@@ -36,7 +36,6 @@ jobs:
           path: ~/repo/out/make
   build-windows:
     executor: win/default
-
     steps:
       - checkout
       - run:
