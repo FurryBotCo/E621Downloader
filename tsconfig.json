@@ -16,7 +16,8 @@
             "./node_modules/@types",
             "./src/util/@types"
 		],
-		"inlineSourceMap": true
+		"inlineSourceMap": true,
+		"skipLibCheck": true
     },
     "include": [
         "**/*"

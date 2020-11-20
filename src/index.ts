@@ -8,14 +8,26 @@ import Analytics from "./Analytics";
 import pkg from "../package.json";
 import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
-const dev = args.includes("--dev");
-if(["-v", "--version"].some(v => args.includes(v))) {
-	if(process.stdout.writable) process.stdout.write(`v${pkg.version}\n`);
-	process.exit(0);
-}
+import { program } from "commander";
+program
+	.option("-h, --help", "Show this list.")
+	.version(pkg.version, "-v, --version", "Output the current application version.")
+	.option("--run, --cli", "Run application in cli mode.")
+	.option("--dev", "Run in development mode.")
+	.option("-c, --config <file>", "Set the path to the config file.")
+	.option("--default-config <file>", "Set the path to the default config file.")
+	.option("-d, --dir <directory>", "Set the path to the save directory.")
+	.option("--tags <tags>", "Set the tags to use in cli mode.")
+	.option("--folder-name <folder>", "Set the folder name to use in cli mode. Defaults to first tag.")
+	.option("--debug-cli", "Keep debug output on when in cli mode (a lot of spammy logging).")
+	.parse([process.argv0, "invalid-argument-because-electron-tm", ...args]);
+
+const o = program.opts();
+// because of the description override
+if (o.help) program.help();
 
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
-Logger.debug("Main", `Development Mode: ${dev ? "Yes" : "No"}`);
+Logger.debug("Main", `Development Mode: ${o.dev ? "Yes" : "No"}`);
 
 if (require("electron-squirrel-startup")) app.quit();
 
@@ -37,9 +49,10 @@ ipcMain
 		Logger[type]?.("CLIENT", messages)
 	)
 	.on("show-update", (ev, version: string) => fs.writeFileSync(`${ConfigManager.DIR}/version-check`, version))
-	.on("setup", async(ev) => {
+	.on("setup", async (ev) => {
 		const v = await Utility.getRelease();
 		ev.reply("setup", ConfigManager.get(), ConfigManager.get(true), v);
+		if (o.cli) Utility.cliMode(window, o, !!o.debugCli);
 	})
 	.on("open-dev-tools", (ev) => window.webContents.openDevTools());
 
@@ -66,13 +79,15 @@ app
 				enableRemoteModule: true,
 				contextIsolation: false
 			},
-			icon: `${__dirname}/assets/icons/png/256x256.png`
+			icon: `${__dirname}/assets/icons/png/256x256.png`,
+			frame: !o.cli
 		});
+		if (o.cli) window.hide();
 		window.removeMenu();
 		state.manage(window);
-		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
 		window.setBackgroundColor("#333");
-		if (dev) window.webContents.openDevTools();
+		if (o.dev) window.webContents.openDevTools();
+		window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/${o.cli ? "cli" : "index"}.html`);
 	})
 	.on("window-all-closed", () => {
 		if (process.platform !== "darwin") app.quit();

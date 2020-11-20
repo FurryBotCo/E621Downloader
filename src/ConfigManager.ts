@@ -34,6 +34,18 @@ export default class ConfigManager {
 	static loadDefault() { return fs.readFileSync(this.DEFAULT_FILE); }
 	private static _cache: ConfigProperties;
 
+	static setFileLocation(file: string) {
+		this.FILE = file;
+	}
+
+	static setDefaultFileLocation(file: string) {
+		this.DEFAULT_FILE = file;
+	}
+
+	static setDir(dir: string) {
+		this.DIR = dir;
+	}
+
 	static getDefaults(): ConfigProperties {
 		if (fs.existsSync(this.DEFAULT_FILE)) return YAML.safeLoad(this.loadDefault().toString()) as ConfigProperties;
 		return deasync(async (cb) => {

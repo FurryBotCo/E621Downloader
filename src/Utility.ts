@@ -6,7 +6,7 @@ import ConfigManager from "./ConfigManager";
 import URL from "url";
 import path from "path";
 import { performance } from "perf_hooks";
-import { dialog, shell } from "electron";
+import { BrowserWindow, dialog, ipcMain, shell } from "electron";
 import Logger from "./Logger";
 import Analytics from "./Analytics";
 
@@ -418,12 +418,12 @@ export default class Utility {
 
 	static checkConfig() {
 		Logger.debug("Utility[ConfigCheck]", "Checking stored version against current..");
-		if(!fs.existsSync(`${ConfigManager.DIR}/version`)) {
+		if (!fs.existsSync(`${ConfigManager.DIR}/version`)) {
 			Logger.debug("Utility[ConfigCheck]", "No stored version, assuming up to date.");
 			fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
 		} else {
 			const v = fs.readFileSync(`${ConfigManager.DIR}/version`).toString();
-			if(v !== `v${pkg.version}`) {
+			if (v !== `v${pkg.version}`) {
 				Logger.debug("Utility[ConfigCheck]", "Stored version does not match current, updating..");
 				this.refreshDefaults();
 				fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
@@ -435,7 +435,20 @@ export default class Utility {
 
 	static refreshDefaults() {
 		Logger.debug("Utility[RefreshDefaults]", "Refreshing default config..");
-		if(fs.existsSync(ConfigManager.DEFAULT_FILE)) fs.unlinkSync(ConfigManager.DEFAULT_FILE);
+		if (fs.existsSync(ConfigManager.DEFAULT_FILE)) fs.unlinkSync(ConfigManager.DEFAULT_FILE);
 		return ConfigManager.getDefaults();
+	}
+
+	static cliMode(window: BrowserWindow, opts: {
+		[k: string]: any;
+	}, debug: boolean) {
+		const t = opts.tags?.split(" ");
+		if (!t) throw new TypeError("You must provide at least one tag via the \"--tags \"<tags\">\" option.");
+		const f = (opts.folderName || t[0]).replace(/[^a-z0-9_\-]/gi, "_").replace(/_{2,}/g, "_").toLowerCase();
+		window.webContents.send("cli-start", t, f, debug);
+		ipcMain.on("cli-end", (ev) => {
+			Logger.debug("CLIMode", "Finished.");
+			process.exit(0);
+		});
 	}
 }

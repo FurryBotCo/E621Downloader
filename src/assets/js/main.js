@@ -105,6 +105,14 @@ function checkLogSize() {
 	return last?.[0]?.bottom > log[0].bottom;
 }
 
+
+window.cliMode = false;
+window.debugLog = true;
+ipcRenderer.on("cli-start", (ev, tags, folder, debug) => {
+	window.cliMode = true;
+	window.debugLog = !!debug;
+	start(tags, folder);
+});
 /**
  * 
  * @param {string[]} tags
@@ -115,7 +123,7 @@ async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
 	window.active = true;
 	const l = (ev, type, ...args) => {
-		console.log(type, ...args);
+		if(window.debugLog) console.debug(type, ...args);
 		switch (type) {
 			case "fetch-begin": {
 				const [tags, usingAuth] = args;
@@ -137,14 +145,14 @@ async function start(tags, folder) {
 
 			case "fetch-finish": {
 				const [tags, amount] = args;
-				showProgress();
+				if(!window.cliMode) showProgress();
 				return createLogEntry(`Got ${amount} total posts.`, "info");
 				break;
 			}
 
 			case "skip": {
 				const [id, reason] = args;
-				showProgress();
+				if(!window.cliMode) showProgress();
 				return createLogEntry(`Skipped post #${id} (${reason})`, "info");
 				break;
 			}
@@ -172,12 +180,16 @@ async function start(tags, folder) {
 				console.debug("end");
 				ipcRenderer.removeListener("debug", l);
 				window.active = false;
-				if (document.hasFocus()) console.debug("Not showing notification as window is focused.");
-				else {
-					showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
-					console.debug("Showed notification.");
+				createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
+				if(window.cliMode) {
+					ipcRenderer.send("cli-end");
+				} else {
+					if (document.hasFocus()) console.debug("Not showing notification as window is focused.");
+					else {
+						showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
+						console.debug("Showed notification.");
+					}
 				}
-				return createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
 				break;
 			}
 
@@ -191,8 +203,10 @@ async function start(tags, folder) {
 }
 
 ipcRenderer.on("progress", (ev, current, total) => {
-	document.querySelector("progress").value = current;
-	document.querySelector("progress").max = total;
+	try {
+		document.querySelector("progress").value = current;
+		document.querySelector("progress").max = total;
+	} catch(e) {}
 });
 
 async function selectSaveDirectory() {

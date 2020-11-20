@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>E621 Downloader - CLI Mode</title>
+    <meta charset="UTF-8" />
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+      "
+    />
+    <script src="../assets/js/main.js" async></script>
+  </head>
+  <body>
+    <script>
+		function showProgress() {}
+		function hideProgress() {}
+      function createLogEntry(text, type) {
+        console.info(text);
+      }
+      window.addEventListener("error", (ev) => {
+        createLogEntry(ev.error.stack, "error");
+      });
+      
+      function setupDone() {
+		console.info("Cli page loaded, assuming running in cli mode.");
+      }
+    </script>
+  </body>
+</html>
