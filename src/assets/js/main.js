@@ -111,7 +111,9 @@ function checkLogSize() {
  * @param {string} folder
  */
 async function start(tags, folder) {
+	if (window.active) return createLogEntry("Download already active. Wait for that one to finish.", "error");
 	ipcRenderer.send("start", tags, folder);
+	window.active = true;
 	const l = (ev, type, ...args) => {
 		console.log(type, ...args);
 		switch (type) {
@@ -169,6 +171,7 @@ async function start(tags, folder) {
 				const [tags, amount, timeMS, time] = args;
 				console.debug("end");
 				ipcRenderer.removeListener("debug", l);
+				window.active = false;
 				if (document.hasFocus()) console.debug("Not showing notification as window is focused.");
 				else {
 					showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
