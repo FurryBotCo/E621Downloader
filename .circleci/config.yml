@@ -39,11 +39,12 @@ jobs:
           command: npm run make
       - store_artifacts:
           path: ~/repo/out/make
-      - store_artifacts:
-          path: ~/repo/out/make
       - run:
           name: Publish Artifacts
           command: ls ~/repo/out/make
+      - run:
+          name: Publish Artifacts
+          command: tree
   build-windows:
     executor: win/default
     steps:
