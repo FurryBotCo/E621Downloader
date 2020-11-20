@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import windowStateKeeper from "electron-window-state";
 import ConfigManager, { ConfigProperties } from "./ConfigManager";
 import Logger from "./Logger";
@@ -12,67 +12,6 @@ Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 Logger.debug("Main", `Development Mode: ${dev ? "Yes" : "No"}`);
 
 if (require("electron-squirrel-startup")) app.quit();
-
-function checkLock() {
-	if (fs.existsSync(`${ConfigManager.DIR}/lock`)) {
-		const c = dialog.showMessageBoxSync({
-			type: "error",
-			buttons: [
-				"Close Application",
-				"Open Folder",
-				"Delete Lock & Continue"
-			],
-			title: "Application Is Locked",
-			message: `Only one instance may be running at a time to avoid conflicts.`,
-			detail: `Close the other instance of this application, or delete the lockfile "${ConfigManager.DIR}/lock" if that doesn't work.\n\nI do not recommend continuing.`,
-			defaultId: 0
-		});
-		switch (c) {
-			default: break;
-			case 1: shell.openPath(ConfigManager.DIR); break;
-			case 2: fs.unlinkSync(`${ConfigManager.DIR}/lock`); break;
-		}
-		if (![2].includes(c)) process.exit(-1);
-	} else {
-		fs.writeFileSync(`${ConfigManager.DIR}/lock`, "");
-		Logger.debug("Main", `Wrote lockfile "${ConfigManager.DIR}/lock".`);
-		process.on("exit", () => {
-			if (fs.existsSync(`${ConfigManager.DIR}/lock`)) {
-				fs.unlinkSync(`${ConfigManager.DIR}/lock`);
-				Logger.debug("Main", `Removed lockfile "${ConfigManager.DIR}/lock".`);
-			} else {
-				Logger.debug("Main", `Lockfile "${ConfigManager.DIR}/lock" does not exist. Maybe it was prematurely deleted?`);
-			}
-		});
-	}
-}
-
-function askAnalytics() {
-	const c = dialog.showMessageBoxSync({
-		type: "info",
-		buttons: [
-			"Accept",
-			"Deny"
-		],
-		title: "Anonymous Analytics Agreement",
-		message: "We may send anonymous analytics about how you use our app.",
-		detail: "We may send anonymous analytics about what tags you search, and how many posts are downloaded total to get an overall look of app usage. These are completely anonymous, and can be turned off at any time by going to the settings menu.",
-		defaultId: 0
-	});
-	switch (c) {
-		case 0: {
-			ConfigManager.edit({
-				analytics: true,
-				analyticsId: Analytics.getId()
-			});
-			break;
-		}
-
-		default: ConfigManager.edit({
-			analytics: false
-		});
-	}
-}
 
 let window: BrowserWindow, state: windowStateKeeper.State;
 
@@ -100,10 +39,11 @@ ipcMain
 
 app
 	.on("ready", async () => {
-		checkLock();
+		Utility.checkLock();
 		// the default value is "PROMPT", but it's not allowed after this check
-		if ((ConfigManager.get().analytics as unknown as "PROMPT") === "PROMPT") askAnalytics();
+		if ((ConfigManager.get().analytics as unknown as "PROMPT") === "PROMPT") Utility.askAnalytics();
 		Analytics.track("ready");
+		Utility.checkConfig();
 		state = windowStateKeeper({
 			defaultWidth: 800,
 			defaultHeight: 600
