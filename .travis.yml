@@ -25,3 +25,7 @@ deploy:
   skip_cleanup: true
   prerelease: true
   draft: true
+  on:
+    tags: true
+  api_key:
+    secure: JEcW8HJEMflg5Uu83PoQrJ1wUFWFEfiBpUwwZZE+NKm0FIqQ1H/8abwaajSZjaOQuwGdm2OraID8qcoRrW1mmCRDzbi6vyd2uXkg/o4+2oD9ubxOTgaVVpw1Q/jyhAu/cQCurJGmUJ/2rMlbfxeZCF0in2RkS6u6dRcQdAL6Djza1snwH3i5a31S9XUkifpex1I3dGo7s53fKIHirGvvggfo0DEwxmoTPrSKPFt7TJYWav4CQAxIkB58QceoSDLxrTY5AlmLtjWNoQqv6w4xMBDb7Xs1ZWUXjHUPnrzRCjtaTNHNQZljLN92HVO7KrhnefVXSG8Y+04DH3BuZQdx/B7t/ZFAmuZ7axg1o2LU+5MFjJmL7ET8/4Ho7/pO8uGqotFAvShtWcaJSQQfKsM2jA5maEqaz9TvF/GbmuB0UCdrSu21WQy3Ut4jSBQnXaLp3N+SA+TioNM+1f9ECQfYj64/ZG4z7naekB6TDqn90WdCjNrRcxTCLMcAuJ+d43vfG+rmdCUqCok9fpXsdAi1F2o56Vpff7c9VaxHSIJG/dz0x/I3LBzFnleHuhR47dTlhTulTRxYYf2QuhVncPHxloHSz/+Qa8ggGw4+h6gVcqoAxHcX3Lji6zPJ7C6OIu/77UFau4CbCvAOGYn4oE6rBWKx+Xc+Ihn3MjxmXAcz0yg=
