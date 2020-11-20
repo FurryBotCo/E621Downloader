@@ -39,12 +39,6 @@ jobs:
           command: npm run make
       - store_artifacts:
           path: ~/repo/out/make
-      - run:
-          name: Publish Artifacts
-          command: ls ~/repo/out/make
-      - run:
-          name: Publish Artifacts
-          command: tree
   build-windows:
     executor: win/default
     steps:
@@ -66,23 +60,20 @@ jobs:
           command: npm run make
       - store_artifacts:
           path: ~/repo/out/make
-      - run:
-          name: Publish Artifacts
-          command: ls ~/repo/out/make
-      - run:
-          name: Publish Artifacts
-          command: ls ./artifacts
   publish:
     docker:
       - image: circleci/golang:1.8
     steps:
       - run:
           name: Publish Artifacts
-          command: echo hi
+          command: ls ~/repo/out/make
 workflows:
   version: 2
   main:
     jobs:
       - build-ubuntu
       - build-windows
-      - publish
+      - publish:
+          requires:
+            - build-ubuntu
+            - build-windows
