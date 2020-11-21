@@ -8,4 +8,4 @@ confinement: classic
 icon: src/assets/icons/png/256x256.png
 license: MIT
 type: "app"
-parts: []
+parts: {}
