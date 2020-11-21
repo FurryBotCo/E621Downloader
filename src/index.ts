@@ -10,8 +10,8 @@ import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
 import { program } from "commander";
 
-Logger.debug("Main->ProcessAguments", process.argv);
-Logger.debug("Main->InternalAguments", args);
+// Logger.debug("Main->ProcessAguments", process.argv);
+// Logger.debug("Main->InternalAguments", args);
 
 program
 	// .option("-h, --help", "Show this list.")

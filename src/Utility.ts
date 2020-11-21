@@ -424,7 +424,7 @@ export default class Utility {
 		} else {
 			const v = fs.readFileSync(`${ConfigManager.DIR}/version`).toString();
 			if (v !== `v${pkg.version}`) {
-				Logger.debug("Utility->ConfigCheck", "Stored version does not match current, updating..");
+				Logger.debug("Utility->ConfigCheck", `Stored version (${v}) does not match current (v${pkg.version}), updating..`);
 				this.refreshDefaults();
 				fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
 			} else {
