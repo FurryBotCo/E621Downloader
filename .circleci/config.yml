@@ -37,8 +37,15 @@ jobs:
       - run:
           name: Generate Builds
           command: npm run make
+      - run:
+          name: fuck off
+          command: ls .
       - store_artifacts:
-          path: ~/repo/out/make
+          path: ./out/make
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   build-windows:
     executor: win/default
     steps:
@@ -62,7 +69,11 @@ jobs:
           name: fuck off
           command: ls .
       - store_artifacts:
-          path: ~/repo/out/make
+          path: ./out/make
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   publish:
     docker:
       - image: circleci/golang:1.8
