@@ -1,7 +1,7 @@
 {
   "name": "e621downloader",
   "version": "1.0.0-beta.6",
-  "description": "Bulk download images from e621.",
+  "description": "Bulk image downloader for e621.",
   "productName": "e621downloader",
   "main": "build/src/index.js",
   "scripts": {
@@ -11,6 +11,9 @@
     "make": "npm run build && electron-forge make",
     "make:win32": "npm run build && electron-forge make --platform win32",
     "make:linux": "npm run build && electron-forge make --platform linux",
+    "make:deb": "npm run build && electron-forge make --platform linux --targets @electron-forge/maker-deb",
+    "make:rpm": "npm run build && electron-forge make --platform linux --targets @electron-forge/maker-rpm",
+    "make:snap": "npm run build && electron-forge make --platform linux --targets @electron-forge/maker-snap",
     "make:darwin": "npm run build && electron-forge make --platform darwin",
     "publish": "npm run build && dotenv electron-forge publish",
     "lint": "eslint --ext .ts ."
@@ -55,7 +58,7 @@
               ],
               "genericName": "Image Downloader",
               "priority": "optional",
-              "productDescription": "Bulk download images from e621.",
+              "productDescription": "Bulk image downloader for e621.",
               "productName": "E621 Downloader",
               "section": "utils",
               "icon": "src/assets/icons/png/128x128.png",
@@ -63,15 +66,15 @@
             }
           }
         },
-		{
-			"name": "@electron-forge/maker-snap",
-			"config": {
-				"confinement": "classic",
-				"description": "Bulk download images from e621.",
-				"grade": "devel",
-				"name": "e621downloader"
-			}
-		},
+        {
+          "name": "@electron-forge/maker-snap",
+          "config": {
+            "confinement": "classic",
+            "description": "Bulk image downloader for e621.",
+            "grade": "devel",
+            "name": "e621downloader"
+          }
+        },
         {
           "name": "@electron-forge/maker-rpm",
           "config": {
@@ -80,8 +83,8 @@
                 "Utility"
               ],
               "genericName": "Image Downloader",
-              "description": "Bulk download images from e621.",
-              "productDescription": "Bulk download images from e621.",
+              "description": "Bulk image downloader for e621.",
+              "productDescription": "Bulk image downloader for e621.",
               "name": "e621downloader",
               "icon": "src/assets/icons/png/128x128.png",
               "productName": "E621 Downloader",
