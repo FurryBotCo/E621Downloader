@@ -43,14 +43,14 @@ jobs:
       - store_artifacts:
           path: ./out/make
       - persist_to_workspace:
-          root: .
+          root: out/make
           paths:
             - .
   build-windows:
     executor: win/default
     steps:
       - attach_workspace:
-          at: .
+          at: out/make
       - checkout
       #     - run:
       #         name: Update NPM
@@ -73,7 +73,7 @@ jobs:
       - store_artifacts:
           path: ./out/make
       - persist_to_workspace:
-          root: .
+          root: out/make
           paths:
             - .
   publish:
@@ -81,10 +81,10 @@ jobs:
       - image: circleci/golang:1.8
     steps:
       - attach_workspace:
-          at: .
+          at: out/make
       - run:
           name: Publish Artifacts
-          command: ls .
+          command: ls . && ls out/make
 workflows:
   version: 2
   main:
