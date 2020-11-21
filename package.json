@@ -13,7 +13,7 @@
     "make:linux": "npm run build && electron-forge make --platform linux",
     "make:darwin": "npm run build && electron-forge make --platform darwin",
     "publish": "npm run build && dotenv electron-forge publish",
-	"lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts ."
   },
   "keywords": [],
   "author": {
@@ -64,23 +64,32 @@
           }
         },
 		{
-			"name": "@electron-forge/maker-rpm",
+			"name": "@electron-forge/maker-snap",
 			"config": {
-				"options": {
-					"categories": [
-						"Utility"
-					],
-					"genericName": "Image Downloader",
-					"description": "Bulk download images from e621.",
-					"productDescription": "Bulk download images from e621.",
-					"name": "e621downloader",
-					"icon": "src/assets/icons/png/128x128.png",
-					"productName": "E621 Downloader",
-					"license": "MIT",
-					"homepage": "https://e621downloader.furrybot.co"
-				}
+				"confinement": "classic",
+				"description": "Bulk download images from e621.",
+				"grade": "devel",
+				"name": "e621downloader"
 			}
 		},
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {
+            "options": {
+              "categories": [
+                "Utility"
+              ],
+              "genericName": "Image Downloader",
+              "description": "Bulk download images from e621.",
+              "productDescription": "Bulk download images from e621.",
+              "name": "e621downloader",
+              "icon": "src/assets/icons/png/128x128.png",
+              "productName": "E621 Downloader",
+              "license": "MIT",
+              "homepage": "https://e621downloader.furrybot.co"
+            }
+          }
+        },
         {
           "name": "@electron-forge/maker-dmg",
           "config": {
@@ -109,6 +118,7 @@
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
     "@electron-forge/maker-dmg": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-snap": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@electron-forge/publisher-github": "^6.0.0-beta.54",
