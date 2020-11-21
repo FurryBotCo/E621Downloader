@@ -62,14 +62,14 @@
               "productName": "e621downloader"
             }
           }
-		},
-		{
-			"name": "@electron-forge/maker-dmg",
-			"config": {
-				"icon": "src/assets/icons/mac/icon.icns",
-				"iconSize": 512
-			}
-		}
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "icon": "src/assets/icons/mac/icon.icns",
+            "iconSize": 512
+          }
+        }
       ],
       "publishers": [
         {
@@ -105,6 +105,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "dotenv": "^8.2.0",
     "electron": "10.1.2",
+    "electron-installer-dmg": "^3.0.0",
     "eslint": "^7.9.0",
     "eslint-plugin-import": "^2.22.0",
     "typescript": "^4.2.0-dev.20201109"
