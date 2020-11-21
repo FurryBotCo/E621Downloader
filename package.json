@@ -56,13 +56,31 @@
               "genericName": "Image Downloader",
               "priority": "optional",
               "productDescription": "Bulk download images from e621.",
-              "productname": "E621 Downloader",
+              "productName": "E621 Downloader",
               "section": "utils",
               "icon": "src/assets/icons/png/128x128.png",
-              "productName": "e621downloader"
+              "name": "e621downloader"
             }
           }
         },
+		{
+			"name": "@electron-forge/maker-rpm",
+			"config": {
+				"options": {
+					"categories": [
+						"Utility"
+					],
+					"genericName": "Image Downloader",
+					"description": "Bulk download images from e621.",
+					"productDescription": "Bulk download images from e621.",
+					"name": "e621downloader",
+					"icon": "src/assets/icons/png/128x128.png",
+					"productName": "E621 Downloader",
+					"license": "MIT",
+					"homepage": "https://e621downloader.furrybot.co"
+				}
+			}
+		},
         {
           "name": "@electron-forge/maker-dmg",
           "config": {
