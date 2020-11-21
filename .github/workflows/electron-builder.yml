@@ -19,24 +19,24 @@ jobs:
         with:
           name: e621downloader.deb
           path: out/make/deb/x64/*
-  snap:
-    name: Snap Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@v1
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 15.x
-      - run: npm i -D
-      - run: npm run make:snap
-      - uses: actions/upload-artifact@v2
-        with:
-          name: e621downloader.snap
-          path: out/make/snap/x64/*
+  # snap:
+  #   name: Snap Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Install Snapcraft
+  #       uses: samuelmeuli/action-snapcraft@v1
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 15.x
+  #     - run: npm i -D
+  #     - run: npm run make:snap
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: e621downloader.snap
+  #         path: out/make/snap/x64/*
   rpm:
     name: RPM Build
     runs-on: ubuntu-latest
