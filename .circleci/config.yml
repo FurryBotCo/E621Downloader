@@ -83,27 +83,27 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install cli tool
-          command: "sudo npm i -g node-github-release"
+          name: Install stuff
+          command: "sudo npm i -g node-github-release dotenv"
       - run:
           name: Download Package Info
           command: wget https://raw.githubusercontent.com/FurryBotCo/E621Downloader/master/package.json -O package.json
       # https://gist.github.com/DarrenN/8c6a5b969481725a4413#gistcomment-3416434
       - run:
           name: Get Version
-          command: 'export VERSION=v$(grep version package.json | awk -F \" ''{print $4}'')'
+          command: 'echo VERSION=v$(grep version package.json | awk -F \" ''{print $4}'') > .env'
       - run:
           name: Filenames
-          command: "export FILENAME_UBUNTU=$(ls out/make/deb/x64/*) && export FILENAME_WINDOWS=$(ls out/make/squirrel.windows/x64 | grep exe)"
+          command: echo FILENAME_UBUNTU=$(ls out/make/deb/x64/*) >> .env && echo FILENAME_WINDOWS=$(ls out/make/squirrel.windows/x64 | grep exe) >> .env"
       - run:
           name: Start Release
-          command: github-release release -t $VERSION --name "$VERSION" --pre-release --draft -u FurryBotCo -r E621Downloader
+          command: dotenv github-release release -t $VERSION --name "$VERSION" --pre-release --draft -u FurryBotCo -r E621Downloader
       - run:
           name: Upload Ubuntu
-          command: github-release upload -t $VERSION  -u FurryBotCo -r E621Downloader -l $FILENAME_UBUNTU -f out/make/deb/x64/$FILENAME_UBUNTU
+          command: dotenv github-release upload -t $VERSION  -u FurryBotCo -r E621Downloader -l $FILENAME_UBUNTU -f out/make/deb/x64/$FILENAME_UBUNTU
       - run:
           name: Upload Windows
-          command: github-release upload -t $VERSION  -u FurryBotCo -r E621Downloader -l $FILENAME_WINDOWS -f out/make/deb/x64/$FILENAME_WINDOWS
+          command: dotenv github-release upload -t $VERSION  -u FurryBotCo -r E621Downloader -l $FILENAME_WINDOWS -f out/make/deb/x64/$FILENAME_WINDOWS
 
 workflows:
   version: 2
