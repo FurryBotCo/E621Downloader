@@ -417,24 +417,24 @@ export default class Utility {
 	}
 
 	static checkConfig() {
-		Logger.debug("Utility[ConfigCheck]", "Checking stored version against current..");
+		Logger.debug("Utility->ConfigCheck", "Checking stored version against current..");
 		if (!fs.existsSync(`${ConfigManager.DIR}/version`)) {
-			Logger.debug("Utility[ConfigCheck]", "No stored version, assuming up to date.");
+			Logger.debug("Utility->ConfigCheck", "No stored version, assuming up to date.");
 			fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
 		} else {
 			const v = fs.readFileSync(`${ConfigManager.DIR}/version`).toString();
 			if (v !== `v${pkg.version}`) {
-				Logger.debug("Utility[ConfigCheck]", "Stored version does not match current, updating..");
+				Logger.debug("Utility->ConfigCheck", "Stored version does not match current, updating..");
 				this.refreshDefaults();
 				fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
 			} else {
-				Logger.debug("Utility[ConfigCheck]", "Stored version matches current, not updating.");
+				Logger.debug("Utility->ConfigCheck", "Stored version matches current, not updating.");
 			}
 		}
 	}
 
 	static refreshDefaults() {
-		Logger.debug("Utility[RefreshDefaults]", "Refreshing default config..");
+		Logger.debug("Utility->RefreshDefaults", "Refreshing default config..");
 		if (fs.existsSync(ConfigManager.DEFAULT_FILE)) fs.unlinkSync(ConfigManager.DEFAULT_FILE);
 		return ConfigManager.getDefaults();
 	}

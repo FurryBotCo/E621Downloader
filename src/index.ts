@@ -9,8 +9,12 @@ import pkg from "../package.json";
 import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
 import { program } from "commander";
+
+Logger.debug("Main->ProcessAguments", process.argv);
+Logger.debug("Main->InternalAguments", args);
+
 program
-	.option("-h, --help", "Show this list.")
+	// .option("-h, --help", "Show this list.")
 	.version(pkg.version, "-v, --version", "Output the current application version.")
 	.option("--run, --cli", "Run application in cli mode.")
 	.option("--dev", "Run in development mode.")
@@ -20,11 +24,10 @@ program
 	.option("--tags <tags>", "Set the tags to use in cli mode.")
 	.option("--folder-name <folder>", "Set the folder name to use in cli mode. Defaults to first tag.")
 	.option("--debug-cli", "Keep debug output on when in cli mode (a lot of spammy logging).")
-	.parse([process.argv0, "invalid-argument-because-electron-tm", ...args]);
-
+	.parse([process.argv0, process.argv0, ...args]);
 const o = program.opts();
 // because of the description override
-if (o.help) program.help();
+if (o.help === true) program.help();
 
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 Logger.debug("Main", `Development Mode: ${o.dev ? "Yes" : "No"}`);
