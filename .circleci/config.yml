@@ -84,17 +84,17 @@ jobs:
           at: .
       - run:
           name: Install stuff
-          command: "sudo npm i -g node-github-release dotenv"
+          command: "sudo npm i -g node-github-release dotenv-cli"
       - run:
           name: Download Package Info
           command: wget https://raw.githubusercontent.com/FurryBotCo/E621Downloader/master/package.json -O package.json
       # https://gist.github.com/DarrenN/8c6a5b969481725a4413#gistcomment-3416434
       - run:
           name: Get Version
-          command: 'echo VERSION=v$(grep version package.json | awk -F \" ''{print $4}'') > .env'
+          command: echo VERSION=v$(grep version package.json | awk -F \" '{print $4}') > .env
       - run:
           name: Filenames
-          command: echo FILENAME_UBUNTU=$(ls out/make/deb/x64/*) >> .env && echo FILENAME_WINDOWS=$(ls out/make/squirrel.windows/x64 | grep exe) >> .env"
+          command: echo FILENAME_UBUNTU=$(ls out/make/deb/x64/*) >> .env && echo FILENAME_WINDOWS=$(ls out/make/squirrel.windows/x64 | grep exe) >> .env
       - run:
           name: Start Release
           command: dotenv github-release release -t $VERSION --name "$VERSION" --pre-release --draft -u FurryBotCo -r E621Downloader
