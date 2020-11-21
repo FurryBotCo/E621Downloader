@@ -13,8 +13,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 15.x
-      - run: npm i -D
-      - run: npm i -D electron-installer-dmg
+      - run: npm i -D electron-installer-dmg appdmg nan
       - run: npm run make:darwin
       - run: ls -R out/make
       - uses: actions/upload-artifact@v2
