@@ -1,0 +1,7 @@
+
+  name: e621downloader
+  version: "1.0.0-beta.6"
+  summary: Bulk image downloader for e621.
+  description: Bulk image downloader for e621.
+  grade: devel
+  confinement: classic
