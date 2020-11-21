@@ -97,7 +97,7 @@ jobs:
           command: echo FILENAME_UBUNTU=$(ls out/make/deb/x64/*) >> .env && echo FILENAME_WINDOWS=$(ls out/make/squirrel.windows/x64 | grep exe) >> .env
       - run:
           name: Start Release
-          command: dotenv github-release release -t $VERSION --name "$VERSION" --pre-release --draft -u FurryBotCo -r E621Downloader
+          command: cat .env && dotenv -p VERSION && dotenv github-release release -t $VERSION --name "$VERSION" --pre-release --draft -u FurryBotCo -r E621Downloader
       - run:
           name: Upload Ubuntu
           command: dotenv github-release upload -t $VERSION  -u FurryBotCo -r E621Downloader -l $FILENAME_UBUNTU -f out/make/deb/x64/$FILENAME_UBUNTU
