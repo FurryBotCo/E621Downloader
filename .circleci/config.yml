@@ -78,13 +78,10 @@ jobs:
             - out/make
   publish:
     docker:
-      - image: circleci/golang:1.8
+      - image: circleci/node:14
     steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Publish Artifacts
-          command: ls . && ls out/make
 workflows:
   version: 2
   main:
