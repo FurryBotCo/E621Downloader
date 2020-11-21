@@ -1,7 +1,11 @@
-
-  name: e621downloader
-  version: "1.0.0-beta.6"
-  summary: Bulk image downloader for e621.
-  description: Bulk image downloader for e621.
-  grade: devel
-  confinement: classic
+name: e621downloader
+title: E621 Downloader
+version: "git"
+summary: Bulk image downloader for e621.
+description: Bulk image downloader for e621.
+grade: devel
+confinement: classic
+icon: src/assets/icons/png/256x256.png
+license: MIT
+type: "app"
+parts: []
