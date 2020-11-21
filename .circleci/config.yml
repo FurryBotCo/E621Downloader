@@ -45,7 +45,7 @@ jobs:
       - persist_to_workspace:
           root: out/make
           paths:
-            - .
+            - out/make
   build-windows:
     executor: win/default
     steps:
@@ -75,7 +75,7 @@ jobs:
       - persist_to_workspace:
           root: out/make
           paths:
-            - .
+            - out/make
   publish:
     docker:
       - image: circleci/golang:1.8
