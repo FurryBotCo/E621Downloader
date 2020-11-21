@@ -15,8 +15,7 @@ jobs:
           node-version: 15.x
       - run: npm i -D electron-installer-dmg appdmg nan
       - run: npm run make:darwin
-      - run: ls -R out/make
       - uses: actions/upload-artifact@v2
         with:
           name: e621downloader.dmg
-          path: out/make/dmg/x64/*
+          path: out/make/*
