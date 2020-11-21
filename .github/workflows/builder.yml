@@ -3,8 +3,8 @@ name: Electron Builder
 on: push
 
 jobs:
-  ubuntu:
-    name: Ubuntu Build
+  mac-os:
+    name: MacOS Build
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -14,7 +14,6 @@ jobs:
         with:
           node-version: 15.x
       - run: npm i -D
-      - run: npm i -D appdmg
       - run: npm run make:darwin
       - run: ls -R out/make
       - uses: actions/upload-artifact@v2

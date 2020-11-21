@@ -13,7 +13,8 @@
     "make:linux": "npm run build && electron-forge make --platform linux",
     "make:darwin": "npm run build && electron-forge make --platform darwin",
     "publish": "npm run build && dotenv electron-forge publish",
-    "lint": "eslint --ext .ts ."
+	"lint": "eslint --ext .ts .",
+	"postinstall": "npmpd"
   },
   "keywords": [],
   "author": {
@@ -105,9 +106,9 @@
     "@typescript-eslint/parser": "^2.34.0",
     "dotenv": "^8.2.0",
     "electron": "10.1.2",
-    "electron-installer-dmg": "^3.0.0",
     "eslint": "^7.9.0",
     "eslint-plugin-import": "^2.22.0",
+    "npm-platform-dependencies": "^0.1.0",
     "typescript": "^4.2.0-dev.20201109"
   },
   "dependencies": {
@@ -125,5 +126,10 @@
     "source-map-support": "^0.5.19",
     "update-electron-app": "^2.0.1",
     "uuid": "^3.4.0"
+  },
+  "darwinDepencencies": {
+	  "electron-installer-dmg": "latest",
+	  "appdmg": "latest",
+	  "nan": "latest"
   }
 }
