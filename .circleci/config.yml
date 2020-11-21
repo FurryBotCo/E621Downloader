@@ -49,6 +49,8 @@ jobs:
   build-windows:
     executor: win/default
     steps:
+      - attach_workspace:
+          at: .
       - checkout
       #     - run:
       #         name: Update NPM
@@ -78,9 +80,11 @@ jobs:
     docker:
       - image: circleci/golang:1.8
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: Publish Artifacts
-          command: ls ~/repo/out/make
+          command: ls .
 workflows:
   version: 2
   main:
