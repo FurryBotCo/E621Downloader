@@ -11,6 +11,7 @@
     "make": "npm run build && electron-forge make",
     "make:win32": "npm run build && electron-forge make --platform win32",
     "make:linux": "npm run build && electron-forge make --platform linux",
+    "make:darwin": "npm run build && electron-forge make --platform darwin",
     "publish": "npm run build && dotenv electron-forge publish",
     "lint": "eslint --ext .ts ."
   },
@@ -61,7 +62,14 @@
               "productName": "e621downloader"
             }
           }
-        }
+		},
+		{
+			"name": "@electron-forge/maker-dmg",
+			"config": {
+				"icon": "src/assets/icons/mac/icon.icns",
+				"iconSize": 512
+			}
+		}
       ],
       "publishers": [
         {
@@ -81,6 +89,7 @@
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.53",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.53",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.53",
     "@electron-forge/maker-zip": "^6.0.0-beta.53",
