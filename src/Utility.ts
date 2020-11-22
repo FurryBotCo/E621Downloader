@@ -253,7 +253,7 @@ export default class Utility {
 		ev.reply("debug", "dir", dir);
 		const cache: {
 			[k: string]: number[];
-		} = c.useCache ? {} : fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {};
+		} = c.useCache ? fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {} : {};
 		for (const post of posts) {
 			if (c.useCache) {
 				if (!cache[tags.join(" ").toLowerCase()]) cache[tags.join(" ").toLowerCase()] = [post.id];
