@@ -4,7 +4,7 @@ version: "git"
 summary: Bulk image downloader for e621.
 description: Bulk image downloader for e621.
 grade: devel
-confinement: classic
+confinement: strict
 icon: src/assets/icons/png/256x256.png
 license: MIT
 type: "app"
