@@ -167,6 +167,7 @@
 						value: blT
 					}
 				] = Array.from(e.querySelectorAll("input")).slice(0, -1);
+				const v = blT.split(" ")
 				updateSettings({
 					key,
 					username,
@@ -177,7 +178,7 @@
 					skipFlash,
 					skipVideo,
 					analytics,
-					blacklistedTags: blT.split(" ")
+					blacklistedTags: !v?.[0] ? [] : v
 				});
 			}
 		</script>
