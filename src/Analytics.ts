@@ -13,14 +13,15 @@ class AnalyticsError extends Error {
 }
 
 export default class Analytics {
-	private constructor() {}
+	private constructor() { }
 
-	static async track(type: string) {
+	static async track(type: string, extra: { [k: string]: any; } | null = null) {
 		if (!ConfigManager.get().analytics) return;
 		await new Promise((a, b) => {
 			const d = JSON.stringify({
 				type,
-				id: this.getId()
+				id: this.getId(),
+				extra
 			});
 
 			const req = https
@@ -44,7 +45,7 @@ export default class Analytics {
 							let d = Buffer.concat(data).toString();
 							try {
 								d = JSON.parse(d);
-							} catch (e) {}
+							} catch (e) { }
 							return res.statusCode! > 299 ? b(new AnalyticsError(d)) : a(d);
 						});
 				});

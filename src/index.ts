@@ -9,6 +9,7 @@ import pkg from "../package.json";
 import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
 import { program } from "commander";
+import os from "os";
 
 // Logger.debug("Main->ProcessAguments", process.argv);
 // Logger.debug("Main->InternalAguments", args);
@@ -64,7 +65,14 @@ app
 		Utility.checkLock();
 		// the default value is "PROMPT", but it's not allowed after this check
 		if ((ConfigManager.get().analytics as unknown as "PROMPT") === "PROMPT") Utility.askAnalytics();
-		Analytics.track("ready");
+		if (!fs.existsSync(`${ConfigManager.DIR}/firstrun`)) {
+			await Analytics.track("install", {
+				platform: os.platform(),
+				arch: os.arch()
+			});
+			fs.writeFileSync(`${ConfigManager.DIR}/firstrun`, "");
+		}
+		await Analytics.track("ready");
 		Utility.checkConfig();
 		state = windowStateKeeper({
 			defaultWidth: 800,

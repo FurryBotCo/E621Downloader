@@ -91,6 +91,7 @@ export default class Utility {
 	}
 
 	static async autocompleteRequest(tag: string) {
+		await Analytics.track("autocomplete", { tag });
 		return new Promise<{ error: boolean; data: any; }>((a, b) => {
 			https.request({
 				method: "GET",
@@ -150,6 +151,11 @@ export default class Utility {
 	}
 
 	static async getPosts(tags: string[], auth: string | null, page: number, lastId?: number | null, ev?: Electron.IpcMainEvent | null) {
+		await Analytics.track("get-posts", {
+			tags,
+			// this is a BOOLEAN, we are not stealing your api key!
+			authUsed: !!auth
+		});
 		if (page === 1) ev?.reply("debug", "fetch-begin", tags, !!auth);
 		ev?.reply("debug", "fetch-start", tags, page);
 		const posts: {
@@ -206,9 +212,15 @@ export default class Utility {
 
 	static async downloadImage(id: number, url: string, ext: string, num: number, total: number, dir: string, ev?: Electron.IpcMainEvent | null) {
 		if (!url) {
+			await Analytics.track("no-image-url", {
+				id
+			});
 			ev?.reply("debug", "skip", id, "no image url");
 			return;
 		} else if (fs.existsSync(`${dir}/${id}.${ext}`) && !ConfigManager.get().overwriteExisting) {
+			await Analytics.track("file-exists", {
+				id
+			});
 			ev?.reply("debug", "skip", id, "file already exists");
 			return;
 		}
@@ -233,6 +245,9 @@ export default class Utility {
 						const d = Buffer.concat(data);
 						fs.writeFileSync(`${dir}/${id}.${ext}`, d);
 						const end = performance.now();
+						await Analytics.track("download-image", {
+							id
+						});
 						ev?.reply("debug", "download-finish", id, num, total, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true));
 						return a();
 					});
@@ -242,6 +257,9 @@ export default class Utility {
 	}
 
 	static async startDownload(ev: Electron.IpcMainEvent, tags: string[], folder: string, window: Electron.BrowserWindow) {
+		await Analytics.track("download-start", {
+			tags
+		});
 		const start = performance.now();
 		const c = ConfigManager.get();
 		const dir = path.resolve(`${c.saveDirectory}/${folder.trim()}`);
@@ -273,6 +291,7 @@ export default class Utility {
 			ev.reply("progress", v, posts.length);
 		}
 		const end = performance.now();
+		await Analytics.track("download-finish", { tags });
 
 		if (c.useCache) fs.writeFileSync(`${c.saveDirectory}/cache.json`, JSON.stringify(cache, null, "\t"));
 		window.setProgressBar(-1);
@@ -442,6 +461,7 @@ export default class Utility {
 	static cliMode(window: BrowserWindow, opts: {
 		[k: string]: any;
 	}, debug: boolean) {
+		Analytics.track("cli-mode");
 		const t = opts.tags?.split(" ");
 		if (!t) throw new TypeError("You must provide at least one tag via the \"--tags \"<tags\">\" option.");
 		const f = (opts.folderName || t[0]).replace(/[^a-z0-9_\-]/gi, "_").replace(/_{2,}/g, "_").toLowerCase();
