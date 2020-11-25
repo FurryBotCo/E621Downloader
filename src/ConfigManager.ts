@@ -20,6 +20,7 @@ export interface ConfigProperties {
 	useCache: boolean;
 	skipFlash: boolean;
 	skipVideo: boolean;
+	globalBlacklistNoticeShown: boolean;
 	blacklistedTags: string[];
 	analyticsId: null | string;
 	analytics: boolean;

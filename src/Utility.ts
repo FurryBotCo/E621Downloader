@@ -215,7 +215,7 @@ export default class Utility {
 			await Analytics.track("no-image-url", {
 				id
 			});
-			ev?.reply("debug", "skip", id, "no image url");
+			ev?.reply("debug", "skip", id, "no image url", ConfigManager.get().globalBlacklistNoticeShown);
 			return;
 		} else if (fs.existsSync(`${dir}/${id}.${ext}`) && !ConfigManager.get().overwriteExisting) {
 			await Analytics.track("file-exists", {

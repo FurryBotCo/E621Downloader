@@ -6,6 +6,7 @@ overwriteExisting: true
 useCache: true
 skipFlash: false
 skipVideo: false
+globalBlacklistNoticeShown: false
 analytics: "PROMPT"
 analyticsId: null
 blacklistedTags: []

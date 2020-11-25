@@ -27,9 +27,9 @@ console.info = log.bind(null, "info");
 console.warn = log.bind(null, "warn");
 
 async function setup() {
-	await new Promise((a,b) => {
+	await new Promise((a, b) => {
 		ipcRenderer.send("setup");
-		ipcRenderer.once("setup", (ev, config, rawConfig,versioning) => {
+		ipcRenderer.once("setup", (ev, config, rawConfig, versioning) => {
 
 			Object.defineProperty(window, "config", {
 				value: config,
@@ -123,7 +123,7 @@ async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
 	window.active = true;
 	const l = (ev, type, ...args) => {
-		if(window.debugLog) console.debug(type, ...args);
+		if (window.debugLog) console.debug(type, ...args);
 		switch (type) {
 			case "fetch-begin": {
 				const [tags, usingAuth] = args;
@@ -145,15 +145,16 @@ async function start(tags, folder) {
 
 			case "fetch-finish": {
 				const [tags, amount] = args;
-				if(!window.cliMode) showProgress();
+				if (!window.cliMode) showProgress();
 				return createLogEntry(`Got ${amount} total posts.`, "info");
 				break;
 			}
 
 			case "skip": {
-				const [id, reason] = args;
-				if(!window.cliMode) showProgress();
-				return createLogEntry(`Skipped post #${id} (${reason})`, "info");
+				const [id, reason, shownPrev] = args;
+				if (!window.cliMode) showProgress();
+				createLogEntry(`Skipped post #${id} (${reason})`, "info");
+				if (reason === "no image url" && shownPrev === false) globalBlacklistNotice();
 				break;
 			}
 
@@ -181,7 +182,7 @@ async function start(tags, folder) {
 				ipcRenderer.removeListener("debug", l);
 				window.active = false;
 				createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
-				if(window.cliMode) {
+				if (window.cliMode) {
 					ipcRenderer.send("cli-end");
 				} else {
 					if (document.hasFocus()) console.debug("Not showing notification as window is focused.");
@@ -206,8 +207,26 @@ ipcRenderer.on("progress", (ev, current, total) => {
 	try {
 		document.querySelector("progress").value = current;
 		document.querySelector("progress").max = total;
-	} catch(e) {}
+	} catch (e) { }
 });
+
+function globalBlacklistNotice() {
+	const v = dialog.showMessageBoxSync({
+		type: "warning",
+		buttons: [
+			"Open Info",
+			"OK"
+		],
+		title: "Post Without URL",
+		message: "A post without a provided image url was found.",
+		detail: "This usually means the post is in e621's global blacklist. You must provide an api key and username in the settings tab to be able to download this content.",
+		defaultId: 1
+	});
+	if (v === 0) window.open("https://e621.net/help/global_blacklist", "E621: Global Blacklist Info", "nodeIntegration=no,contextIsolation=yes");
+	updateSettings({
+		globalBlacklistNoticeShown: true
+	});
+}
 
 async function selectSaveDirectory() {
 	if (!__filename.endsWith("settings.html")) return;
