@@ -286,20 +286,19 @@ export default class Utility {
 				window.setProgressBar(p);
 				ev.reply("progress", v, posts.length);
 			}
+			const v = ++i;
+
+			if (c.useCache && cache[tags.join(" ").toLowerCase()].includes(post.id)) ev?.reply("debug", "skip", post.id, "Post is in cache list.");
+			else if (c.skipFlash && post.ext === "swf") ev?.reply("debug", "skip", post.id, "Flash content.");
+			else if (c.skipVideo && post.ext === "webm") ev?.reply("debug", "skip", post.id, "Video content.");
+			else if (c.blacklistedTags.some(t => post.tags.includes(t))) ev?.reply("debug", "skip", post.id, "Blacklisted tag.");
+			else await Utility.downloadImage(post.id, post.url, post.ext, v, posts.length, dir, ev);
+
 			if (c.useCache) {
 				if (!cache[tags.join(" ").toLowerCase()]) cache[tags.join(" ").toLowerCase()] = [post.id];
 				else if (!cache[tags.join(" ").toLowerCase()].includes(post.id)) cache[tags.join(" ").toLowerCase()].push(post.id);
-				else {
-					ev?.reply("debug", "skip", post.id, "Post is in cache list.");
-					progress();
-					continue;
-				}
 			}
-			const v = ++i;
-			if (c.skipFlash && post.ext === "swf") (progress(), ev?.reply("debug", "skip", post.id, "Flash content."));
-			else if (c.skipVideo && post.ext === "webm") (progress(), ev?.reply("debug", "skip", post.id, "Video content."));
-			else if (c.blacklistedTags.some(t => post.tags.includes(t))) (progress(), ev?.reply("debug", "skip", post.id, "Blacklisted tag."));
-			else await Utility.downloadImage(post.id, post.url, post.ext, v, posts.length, dir, ev);
+
 			progress();
 		}
 		const end = performance.now();
