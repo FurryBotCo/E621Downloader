@@ -212,7 +212,7 @@ export default class Utility {
 
 	static async downloadImage(id: number, url: string, ext: string, num: number, total: number, dir: string, ev?: Electron.IpcMainEvent | null) {
 		if (!url) {
-			await Analytics.track("no-image-url", {
+			Analytics.track("no-image-url", {
 				id
 			});
 			ev?.reply("debug", "skip", id, "no image url", ConfigManager.get().globalBlacklistNoticeShown);
@@ -238,6 +238,14 @@ export default class Utility {
 			}, (res) => {
 				const data: any[] = [];
 
+
+				/* process.once("uncaughtException", async (err) => {
+					if (err.message.toLowerCase().startsWith("client network socket disconnected")) {
+						ev?.reply("error", "Connection was interrupted, trying again..");
+						const v = await this.downloadImage(id, url, ext, num, total, dir, ev);
+						return a(v);
+					}
+				}); */
 				res
 					.on("data", (d) => data.push(d))
 					.on("error", (err) => b(err))
@@ -273,22 +281,26 @@ export default class Utility {
 			[k: string]: number[];
 		} = c.useCache ? fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {} : {};
 		for (const post of posts) {
+			function progress() {
+				const p = (v / posts.length);
+				window.setProgressBar(p);
+				ev.reply("progress", v, posts.length);
+			}
 			if (c.useCache) {
 				if (!cache[tags.join(" ").toLowerCase()]) cache[tags.join(" ").toLowerCase()] = [post.id];
 				else if (!cache[tags.join(" ").toLowerCase()].includes(post.id)) cache[tags.join(" ").toLowerCase()].push(post.id);
 				else {
 					ev?.reply("debug", "skip", post.id, "Post is in cache list.");
+					progress();
 					continue;
 				}
 			}
 			const v = ++i;
-			if (c.skipFlash && post.ext === "swf") ev?.reply("debug", "skip", post.id, "Flash content.");
-			else if (c.skipVideo && post.ext === "webm") ev?.reply("debug", "skip", post.id, "Video content.");
-			else if (c.blacklistedTags.some(t => post.tags.includes(t))) ev?.reply("debug", "skip", post.id, "Blacklisted tag.");
+			if (c.skipFlash && post.ext === "swf") (progress(), ev?.reply("debug", "skip", post.id, "Flash content."));
+			else if (c.skipVideo && post.ext === "webm") (progress(), ev?.reply("debug", "skip", post.id, "Video content."));
+			else if (c.blacklistedTags.some(t => post.tags.includes(t))) (progress(), ev?.reply("debug", "skip", post.id, "Blacklisted tag."));
 			else await Utility.downloadImage(post.id, post.url, post.ext, v, posts.length, dir, ev);
-			const p = (v / posts.length);
-			window.setProgressBar(p);
-			ev.reply("progress", v, posts.length);
+			progress();
 		}
 		const end = performance.now();
 		await Analytics.track("download-finish", { tags });
