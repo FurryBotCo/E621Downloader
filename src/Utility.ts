@@ -305,6 +305,7 @@ export default class Utility {
 		await Analytics.track("download-finish", { tags });
 
 		if (c.useCache) fs.writeFileSync(`${c.saveDirectory}/cache.json`, JSON.stringify(cache, null, "\t"));
+		if (fs.readdirSync(dir).length === 0) fs.unlinkSync(dir);
 		window.setProgressBar(-1);
 		ev.reply("debug", "end", tags, posts.length, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true));
 	}
