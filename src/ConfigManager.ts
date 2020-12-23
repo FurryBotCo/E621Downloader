@@ -24,6 +24,7 @@ export interface ConfigProperties {
 	blacklistedTags: string[];
 	analyticsId: null | string;
 	analytics: boolean;
+	threads: 1 | 2 | 3;
 }
 
 export default class ConfigManager {

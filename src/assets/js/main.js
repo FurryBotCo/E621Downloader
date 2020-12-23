@@ -123,7 +123,64 @@ async function start(tags, folder) {
 	ipcRenderer.send("start", tags, folder);
 	window.active = true;
 	const l = (ev, type, ...args) => {
-		if (window.debugLog) console.debug(type, ...args);
+		/* if (window.debugLog)  */console.debug(type, ...args);
+		switch (type) {
+			case "download-start": {
+				const [tags, folder, dir, threads, usingAuth] = args;
+				createLogEntry(`Using ${threads} threads for downloads.`, "info");
+				createLogEntry(`Set download directory to "${dir}"`, "info");
+				return createLogEntry(`Starting a search with the tags "${tags.join(" ")}" (using auth: ${usingAuth ? "YES" : "NO"})`, "info");
+				break;
+			}
+
+			case "thread-spawn": {
+				const [id, workerId] = args;
+				return createLogEntry(`Spawned thread #${id + 1}`, "info");
+				break;
+			}
+
+			case "ready": {
+				const [id, workerId] = args;
+				return createLogEntry(`Thread #${id + 1} is ready.`, "info");
+			}
+
+			case "fetch-page": {
+				const [page, count, time] = args;
+				return createLogEntry(`Got ${count} posts on page #${page} (${ms(time)})`, "info");
+			}
+
+			case "fetch-finish": {
+				const [total, time] = args;
+				return createLogEntry(`Finished fetching ${total} posts in ${ms(time)}`, "info");
+			}
+
+			case "skip": {
+				const [thread, id, reason, current, total] = args;
+				const t =
+					reason === "cache" ? "Post is cached." :
+						reason === "fileExists" ? "File already exists." :
+							reason === "video" ? "Post is a video." :
+								reason === "flash" ? "Post is flash." :
+									reason;
+				return createLogEntry(`[${current}/${total}] Skipped post #${id}, reason: ${t}`, "info");
+			}
+
+			case "post-finish": {
+				const [thread, id, time, current, total] = args;
+				return createLogEntry(`[Thread #${thread}][${current}/${total}] Finished downloading post #${id} in ${ms(time)}`, "info");
+			}
+
+			case "thread-done": {
+				const [thread, amount, time] = args;
+				return createLogEntry(`[Thread #${thread}] Finished downloading ${amount} posts in ${ms(time)}`, "info");
+			}
+
+			case "download-done": {
+				const [total, time] = args;
+				return createLogEntry(`Finished downloading ${total} posts in ${ms(time)}`, "info");
+			}
+		}
+		return;
 		switch (type) {
 			case "fetch-begin": {
 				const [tags, usingAuth] = args;
@@ -179,7 +236,7 @@ async function start(tags, folder) {
 			case "end": {
 				const [tags, amount, timeMS, time] = args;
 				console.debug("end");
-				ipcRenderer.removeListener("debug", l);
+				ipcRenderer.removeListener("message", l);
 				window.active = false;
 				createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
 				if (window.cliMode) {
@@ -200,7 +257,7 @@ async function start(tags, folder) {
 			}
 		}
 	};
-	ipcRenderer.on("debug", l);
+	ipcRenderer.on("message", l);
 }
 
 ipcRenderer.on("progress", (ev, current, total) => {

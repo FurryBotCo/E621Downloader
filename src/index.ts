@@ -17,14 +17,7 @@ import os from "os";
 program
 	// .option("-h, --help", "Show this list.")
 	.version(pkg.version, "-v, --version", "Output the current application version.")
-	.option("--run, --cli", "Run application in cli mode.")
 	.option("--dev", "Run in development mode.")
-	.option("-c, --config <file>", "Set the path to the config file.")
-	.option("--default-config <file>", "Set the path to the default config file.")
-	.option("-d, --dir <directory>", "Set the path to the save directory.")
-	.option("--tags <tags>", "Set the tags to use in cli mode.")
-	.option("--folder-name <folder>", "Set the folder name to use in cli mode. Defaults to first tag.")
-	.option("--debug-cli", "Keep debug output on when in cli mode (a lot of spammy logging).")
 	.parse([process.argv0, process.argv0, ...args]);
 const o = program.opts();
 // because of the description override
@@ -56,7 +49,6 @@ ipcMain
 	.on("setup", async (ev) => {
 		const v = await Utility.getRelease();
 		ev.reply("setup", ConfigManager.get(), ConfigManager.get(true), v);
-		if (o.cli) Utility.cliMode(window, o, !!o.debugCli);
 	})
 	.on("open-dev-tools", (ev) => window.webContents.openDevTools());
 

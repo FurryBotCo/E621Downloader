@@ -135,7 +135,7 @@
 		"@typescript-eslint/eslint-plugin": "^2.34.0",
 		"@typescript-eslint/parser": "^2.34.0",
 		"dotenv": "^8.2.0",
-		"electron": "10.1.2",
+		"electron": "^12.0.0-beta.6",
 		"eslint": "^7.9.0",
 		"eslint-plugin-import": "^2.22.0",
 		"typescript": "^4.2.0-dev.20201109"
@@ -145,6 +145,7 @@
 		"arg": "^5.0.0",
 		"commander": "^6.2.0",
 		"deasync": "^0.1.21",
+		"e621downloader.js": "^1.0.7",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-window-state": "^5.0.3",
 		"express": "^4.17.1",

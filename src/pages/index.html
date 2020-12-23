@@ -1,130 +1,133 @@
 <html>
-  <head>
-    <title>E621 Downloader - Home</title>
-    <meta charset="UTF-8" />
-    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="
+
+<head>
+	<title>E621 Downloader - Home</title>
+	<meta charset="UTF-8" />
+	<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+	<meta http-equiv="Content-Security-Policy" content="
         script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-      "
-    />
-    <link rel="stylesheet" href="../assets/css/index.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" integrity="sha512-RT/9M3vzjYojy97YiNTZbyrQ4nJ+gNoinZKTGSVvLITijfQIAIDNicUe+U2KaeOWo9j7IbRzRisx/7eglOc+wA==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.theme.min.css" integrity="sha512-NhTirzJR+yVbYUI+kkm99Bp3ORG0yv5Kd46kBcmGowLMBE0vX25h7GsJFVrMNGkqcJqr5lYRMfDk/cCwLKzCYA==" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js" integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg==" crossorigin="anonymous"></script>
-    <script src="../assets/js/main.js" async></script>
-  </head>
-  <body>
-    <h1 class="title">E621 Downloader</h1>
-    <form id="main" onsubmit="handleSubmit(this); return false;">
-      <table>
-        <tbody id="search-setup">
-          <tr class="container">
-            <td class="input">
-              <input
-                type="text"
-                name="tags"
-                placeholder="Space separated tag list"
-              />
-            </td>
-            <td class="input">
-              <input type="text" name="folder" placeholder="Folder name" />
-            </td>
-          </tr>
-          <tr>
-            <td class="start" colspan="2">
-              <input type="submit" value="Start" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
-    <div id="progress" class="hidden">
-      <progress value="0" max="0"></progress>
-    </div>
-    <br />
-    <div id="debug"></div>
-    <script>
-      function showProgress() {
-        document.querySelector("div#progress").classList.remove("hidden");
-      }
-      function hideProgress() {
-        document.querySelector("div#progress").classList.add("hidden");
-      }
-      function createLogEntry(text, type) {
-        console.debug(text);
-        text = text.replace(/\n/g, "<br>");
-        document.querySelector(
-          "div#debug"
-        ).innerHTML += `<debug-entry class="${type}"><span>${text}</span><br></debug-entry>`;
-        document.querySelector("div#debug").scrollTop = document.querySelector(
-          "div#debug"
-        ).scrollHeight;
-        /*const tooLong = checkLogSize();
-		  if(tooLong) {
-			  const e = Array.from(document.querySelectorAll("div#debug debug-entry"));
-			  e[0].parentNode.removeChild(e[0]);
-		  }*/
-      }
-      let timer, lastAutocomplete;
-      const tv = document.querySelector("input[name=tags]");
-      const as = new Awesomplete(tv, {
-        minChars: 1,
-        filter: (text, input) =>
-          Awesomplete.FILTER_CONTAINS(text, input.match(/[^\s]*$/)?.[0]),
-        item: (text, input) =>
-          Awesomplete.ITEM(text, input.match(/[^\s]*$/)?.[0]),
-        replace: (text) =>
-          (as.input.value = `${`${as.input.value
-            .split(" ")
-            .slice(0, -1)
-            .join(" ")} ${text.value}`.trim()} `),
-      });
-      tv.addEventListener("keyup", (e) => {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(async () => {
-          const t = tv.value.split(" ");
-          const v = t[t.length - 1];
-          console.debug("Current Tags:", t);
-          console.log("Current Tag (for suggestions):", v);
-          if (!v || lastAutocomplete === v) return;
-          lastAutocomplete = v;
-          const tags = await autocompleteTags(v);
-          console.debug("Suggestion Tags:", tags);
-          as.list = tags.map((v) => v.name);
-        }, 200);
-      });
-      window.addEventListener("error", (ev) => {
-        createLogEntry(ev.error.stack, "error");
-      });
-      
-      function setupDone() {
+      " />
+	<link rel="stylesheet" href="../assets/css/index.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css"
+		integrity="sha512-RT/9M3vzjYojy97YiNTZbyrQ4nJ+gNoinZKTGSVvLITijfQIAIDNicUe+U2KaeOWo9j7IbRzRisx/7eglOc+wA=="
+		crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.theme.min.css"
+		integrity="sha512-NhTirzJR+yVbYUI+kkm99Bp3ORG0yv5Kd46kBcmGowLMBE0vX25h7GsJFVrMNGkqcJqr5lYRMfDk/cCwLKzCYA=="
+		crossorigin="anonymous" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"
+		integrity="sha512-HcBl0GSJvt4Qecm4srHapirUx0HJDi2zYXm6KUKNNUGdTIN9cBwakVZHWmRVj4MKgy1AChqhWGYcMDbRKgO0zg=="
+		crossorigin="anonymous"></script>
+	<script src="../assets/js/ms.js" async></script>
+	<script src="../assets/js/main.js" async></script>
+</head>
 
-      }
+<body>
+	<h1 class="title">E621 Downloader</h1>
+	<form id="main" onsubmit="handleSubmit(this); return false;">
+		<table>
+			<tbody id="search-setup">
+				<tr class="container">
+					<td class="input">
+						<input type="text" name="tags" placeholder="Space separated tag list" />
+					</td>
+					<td class="input">
+						<input type="text" name="folder" placeholder="Folder name" />
+					</td>
+				</tr>
+				<tr>
+					<td class="start" colspan="2">
+						<input type="submit" value="Start" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+	<div id="progress" class="hidden">
+		<progress value="0" max="0"></progress>
+	</div>
+	<br />
+	<div id="debug"></div>
+	<script>
+		function showProgress() {
+			document.querySelector("div#progress").classList.remove("hidden");
+		}
+		function hideProgress() {
+			document.querySelector("div#progress").classList.add("hidden");
+		}
+		function createLogEntry(text, type) {
+			console.debug(text);
+			text = text.replace(/\n/g, "<br>");
+			document.querySelector(
+				"div#debug"
+			).innerHTML += `<debug-entry class="${type}"><span>${text}</span><br></debug-entry>`;
+			document.querySelector("div#debug").scrollTop = document.querySelector(
+				"div#debug"
+			).scrollHeight;
+			/*const tooLong = checkLogSize();
+			  if(tooLong) {
+				  const e = Array.from(document.querySelectorAll("div#debug debug-entry"));
+				  e[0].parentNode.removeChild(e[0]);
+			  }*/
+		}
+		let timer, lastAutocomplete;
+		const tv = document.querySelector("input[name=tags]");
+		const as = new Awesomplete(tv, {
+			minChars: 1,
+			filter: (text, input) =>
+				Awesomplete.FILTER_CONTAINS(text, input.match(/[^\s]*$/)?.[0]),
+			item: (text, input) =>
+				Awesomplete.ITEM(text, input.match(/[^\s]*$/)?.[0]),
+			replace: (text) =>
+			(as.input.value = `${`${as.input.value
+				.split(" ")
+				.slice(0, -1)
+				.join(" ")} ${text.value}`.trim()} `),
+		});
+		tv.addEventListener("keyup", (e) => {
+			if (timer) clearTimeout(timer);
+			timer = setTimeout(async () => {
+				const t = tv.value.split(" ");
+				const v = t[t.length - 1];
+				console.debug("Current Tags:", t);
+				console.log("Current Tag (for suggestions):", v);
+				if (!v || lastAutocomplete === v) return;
+				lastAutocomplete = v;
+				const tags = await autocompleteTags(v);
+				console.debug("Suggestion Tags:", tags);
+				as.list = tags.map((v) => v.name);
+			}, 200);
+		});
+		window.addEventListener("error", (ev) => {
+			createLogEntry(ev.error.stack, "error");
+		});
 
-      /**
-       * @param {HTMLFormElement} e
-       */
-      function handleSubmit(e) {
-        const tags = e.querySelector("input[name=tags]").value.split(" ");
-        const folder = e
-          .querySelector("input[name=folder]")
-          .value?.replace(/[^a-z0-9_\-]/gi, "_")
-          ?.replace(/_{2,}/g, "_")
-          ?.toLowerCase();
-        if (tags.length === 0 || tags[0].length === 0) {
-          createLogEntry("1 or more tags are required.", "error");
-          return;
-        }
-        if (!folder) {
-          createLogEntry("Folder name is required.", "error");
-          return;
-        }
-        start(tags, folder);
-      }
-    </script>
-    <a class="bottom-left" href="./settings.html">Settings</a>
-  </body>
+		function setupDone() {
+
+		}
+
+		/**
+		 * @param {HTMLFormElement} e
+		 */
+		function handleSubmit(e) {
+			const tags = e.querySelector("input[name=tags]").value.split(" ");
+			const folder = e
+				.querySelector("input[name=folder]")
+				.value?.replace(/[^a-z0-9_\-]/gi, "_")
+				?.replace(/_{2,}/g, "_")
+				?.toLowerCase();
+			if (tags.length === 0 || tags[0].length === 0) {
+				createLogEntry("1 or more tags are required.", "error");
+				return;
+			}
+			if (!folder) {
+				createLogEntry("Folder name is required.", "error");
+				return;
+			}
+			start(tags, folder);
+		}
+	</script>
+	<a class="bottom-left" href="./settings.html">Settings</a>
+</body>
+
 </html>

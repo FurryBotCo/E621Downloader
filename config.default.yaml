@@ -10,3 +10,4 @@ globalBlacklistNoticeShown: false
 analytics: "PROMPT"
 analyticsId: null
 blacklistedTags: []
+threads: 3

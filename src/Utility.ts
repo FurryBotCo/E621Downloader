@@ -9,6 +9,7 @@ import { performance } from "perf_hooks";
 import { BrowserWindow, dialog, ipcMain, shell } from "electron";
 import Logger from "./Logger";
 import Analytics from "./Analytics";
+import Downloader from "./Downloader";
 
 interface MsResponse {
 	ms: number;
@@ -272,11 +273,12 @@ export default class Utility {
 		const c = ConfigManager.get();
 		const dir = path.resolve(`${c.saveDirectory}/${folder.trim()}`);
 		if (!fs.existsSync(dir)) fs.mkdirpSync(dir);
-		let auth: string | null = null;
-		if (c.username && c.key) auth = Buffer.from(`${c.username}:${c.key}`).toString("base64");
-		const posts = await Utility.getPosts(tags, auth, 1, null, ev);
-		let i = 0;
 		ev.reply("debug", "dir", dir);
+
+		Downloader.start(tags, folder, ev);
+
+		/* const posts = await Utility.getPosts(tags, auth, 1, null, ev);
+		let i = 0;
 		const cache: {
 			[k: string]: number[];
 		} = c.useCache ? fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {} : {};
@@ -307,7 +309,7 @@ export default class Utility {
 		if (c.useCache) fs.writeFileSync(`${c.saveDirectory}/cache.json`, JSON.stringify(cache, null, "\t"));
 		if (fs.readdirSync(dir).length === 0) fs.unlinkSync(dir);
 		window.setProgressBar(-1);
-		ev.reply("debug", "end", tags, posts.length, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true));
+		ev.reply("debug", "end", tags, posts.length, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true)); */
 	}
 
 	static mergeObjects<A = object, B = object>(a: A, b: B) {
@@ -346,7 +348,7 @@ export default class Utility {
 		}>((a, b) => {
 			https.request({
 				method: "GET",
-				hostname: "e621downloader.furrybot.co",
+				hostname: "e621.download",
 				path: `/updates?version=v${pkg.version}`,
 				port: 443,
 				protocol: "https:",
@@ -468,19 +470,5 @@ export default class Utility {
 		Logger.debug("Utility->RefreshDefaults", "Refreshing default config..");
 		if (fs.existsSync(ConfigManager.DEFAULT_FILE)) fs.unlinkSync(ConfigManager.DEFAULT_FILE);
 		return ConfigManager.getDefaults();
-	}
-
-	static cliMode(window: BrowserWindow, opts: {
-		[k: string]: any;
-	}, debug: boolean) {
-		Analytics.track("cli-mode");
-		const t = opts.tags?.split(" ");
-		if (!t) throw new TypeError("You must provide at least one tag via the \"--tags \"<tags\">\" option.");
-		const f = (opts.folderName || t[0]).replace(/[^a-z0-9_\-]/gi, "_").replace(/_{2,}/g, "_").toLowerCase();
-		window.webContents.send("cli-start", t, f, debug);
-		ipcMain.on("cli-end", (ev) => {
-			Logger.debug("CLIMode", "Finished.");
-			process.exit(0);
-		});
 	}
 }

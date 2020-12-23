@@ -27,7 +27,7 @@ export default class Analytics {
 			const req = https
 				.request({
 					method: "POST",
-					hostname: "e621downloader.furrybot.co",
+					hostname: "e621.download",
 					path: "/track",
 					port: 443,
 					protocol: "https:",
