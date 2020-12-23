@@ -79,7 +79,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 15.x
-      - run: npm i -D electron-installer-dmg appdmg nan async ds-store image-size
+      - run: npm i -D electron-installer-dmg appdmg nan async ds-store image-size is-my-json-valid
       - run: npm run make:darwin
       - uses: actions/upload-artifact@v2
         with:
