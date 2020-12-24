@@ -285,6 +285,11 @@ function globalBlacklistNotice() {
 	});
 }
 
+async function openSaveDirectory() {
+	if (!__filename.endsWith("settings.html")) return;
+	shell.openPath(config.saveDirectory);
+};
+
 async function selectSaveDirectory() {
 	if (!__filename.endsWith("settings.html")) return;
 	else {

@@ -1,198 +1,205 @@
 <!DOCTYPE HTML>
 <html lang="en">
-	<head>
-		<title>
-			E621 Downloader - Settings
-		</title>
-		<meta charset="UTF-8">
-		<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
-		<meta
-		http-equiv="Content-Security-Policy"
-		content="
+
+<head>
+	<title>
+		E621 Downloader - Settings
+	</title>
+	<meta charset="UTF-8">
+	<!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+	<meta http-equiv="Content-Security-Policy" content="
 			script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
 			style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-		"
-		/>
-		<link rel="stylesheet" href="../assets/css/index.css" />
-		<script src="../assets/js/main.js"></script>
-	</head>
-	<body>
-		<form id="main" onsubmit="handleSubmit(this); return false;">
-			<table>
-				<tbody id="settings">
-					<tr>
-						<td class="input">
-							<label for="key">E621 API Key</label>
-							<input type="text" name="key" placeholder="Your e621 api key.">
-						</td>
-					</tr>
-					<tr>
-						<td class="input">
-							<label for="username">E621 Username</label>
-							<input type="text" name="username" placeholder="Your e621 username.">
-						</td>
-					</tr>
-					<tr>
-						<td class="input">
-							<label for="saveDirectory">Save Directory</label>
-							<input type="text" name="saveDirectory" placeholder="Location to save images to.">
-							<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a save location." onclick="selectSaveDirectory()">
-						</td>
-					</tr>
-					<tr>
-						<td class="input">
-							<label for="logFile">Log File</label>
-							<input type="text" name="logFile" placeholder="Location to save logs.">
-							<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a log location." onclick="selectLogFile()">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="overwriteExisting">Overwrite existing</label>
-							<br>
-							<br>
-							<label class="switch">
-								<input name="overwriteExisting" type="checkbox">
-								<span class="slider round"></span>
-							  </label>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="useCache">Use Cache</label>
-							<br>
-							<br>
-							<label class="switch">
-								<input name="useCache" type="checkbox">
-								<span class="slider round"></span>
-							  </label>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="skipFlash">Skip Flash Content</label>
-							<br>
-							<br>
-							<label class="switch">
-								<input name="skipFlash" type="checkbox">
-								<span class="slider round"></span>
-							  </label>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="skipVideo">Skip Video Content</label>
-							<br>
-							<br>
-							<label class="switch">
-								<input name="skipVideo" type="checkbox">
-								<span class="slider round"></span>
-							  </label>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="analytics">Allow Anonymous Analytics</label>
-							<br>
-							<br>
-							<label class="switch">
-								<input name="analytics" type="checkbox">
-								<span class="slider round"></span>
-							  </label>
-						</td>
-					</tr>
-					<tr>
-						<td class="input">
-							<label for="blacklistedTags">Blacklisted Tags (Space Separated)</label>
-							<input type="text" name="blacklistedTags" placeholder="Any tags you want to globally skip.">
-						</td>
-					</tr>
-					<tr>
-						<td class="input">
-							<label for="threads">Number Of Threads To Use (1 min, 3 max)</label>
-							<input type="number" name="threads" placeholder="1, 2, or 3" min="1" max="3">
-						</td>
-					</tr>
-					<tr>
-						<td class="submit">
-							<input type="submit" value="Submit">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
-		<script>
-			const key = document.querySelector("input[name=key]");
-			const username = document.querySelector("input[name=username]");
-			const saveDirectory = document.querySelector("input[name=saveDirectory]");
-			const logFile = document.querySelector("input[name=logFile]");
-			const overwriteExisting = document.querySelector("input[name=overwriteExisting]");
-			const useCache = document.querySelector("input[name=useCache]");
-			const skipFlash = document.querySelector("input[name=skipFlash]");
-			const skipVideo = document.querySelector("input[name=skipVideo]");
-			const analytics = document.querySelector("input[name=analytics]");
-			const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
-			const threads = document.querySelector("input[name=threads]");
+		" />
+	<link rel="stylesheet" href="../assets/css/index.css" />
+	<script src="../assets/js/main.js"></script>
+</head>
 
-			function setupDone() {
-				key.value = config.key || "";
-				username.value = config.username || "";
-				saveDirectory.value = rawConfig.saveDirectory || "";
-				logFile.value = rawConfig.logFile || "";
-				if(config.overwriteExisting) overwriteExisting.checked = "checked";
-				if(config.useCache) useCache.checked = "checked";
-				if(config.skipFlash) skipFlash.checked = "checked";
-				if(config.skipVideo) skipVideo.checked = "checked";
-				if(config.analytics) analytics.checked = "checked";
-				blacklistedTags.value = config.blacklistedTags.join(" ");
-				threads.value = config.threads;
-			}
-			
-			/**
-			 * @param {HTMLFormElement} e
-			 */
-			function handleSubmit(e) {
-				const [
-					{ 
-						value: key
-					}, { 
-						value: username
-					}, {
-						value: saveDirectory
-					}, {
-						value: logFile
-					}, {
-						checked: overwriteExisting
-					}, {
-						checked: useCache
-					}, {
-						checked: skipFlash
-					}, {
-						checked: skipVideo
-					}, {
-						checked: analytics
-					}, {
-						value: blT
-					}, {
-						value: threads
-					}
-				] = Array.from(e.querySelectorAll("input")).slice(0, -1);
-				const v = blT.split(" ")
-				updateSettings({
-					key,
-					username,
-					saveDirectory,
-					logFile,
-					overwriteExisting,
-					useCache,
-					skipFlash,
-					skipVideo,
-					analytics,
-					blacklistedTags: !v?.[0] ? [] : v,
-					threads
-				});
-			}
-		</script>
-		<a href="./index.html" class="bottom-left">Back</a>
-	</body>
+<body>
+	<form id="main" onsubmit="handleSubmit(this); return false;">
+		<table>
+			<tbody id="settings">
+				<tr>
+					<td class="input">
+						<label for="key">E621 API Key</label>
+						<input type="text" name="key" placeholder="Your e621 api key.">
+					</td>
+				</tr>
+				<tr>
+					<td class="input">
+						<label for="username">E621 Username</label>
+						<input type="text" name="username" placeholder="Your e621 username.">
+					</td>
+				</tr>
+				<tr>
+					<td class="input">
+						<label for="saveDirectory">Save Directory</label>
+						<input type="text" name="saveDirectory" placeholder="Location to save images to.">
+						<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a save location."
+							onclick="selectSaveDirectory()">
+					</td>
+				</tr>
+				<tr>
+					<td class="open-dir">
+						<input type="button" value="Open Save Directory" onclick="openSaveDirectory()">
+					</td>
+				</tr>
+				<tr>
+					<td class="input">
+						<label for="logFile">Log File</label>
+						<input type="text" name="logFile" placeholder="Location to save logs.">
+						<img class="save-icon" src="../assets/icons/save.svg" alt="Click to select a log location."
+							onclick="selectLogFile()">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="overwriteExisting">Overwrite existing</label>
+						<br>
+						<br>
+						<label class="switch">
+							<input name="overwriteExisting" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="useCache">Use Cache</label>
+						<br>
+						<br>
+						<label class="switch">
+							<input name="useCache" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="skipFlash">Skip Flash Content</label>
+						<br>
+						<br>
+						<label class="switch">
+							<input name="skipFlash" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="skipVideo">Skip Video Content</label>
+						<br>
+						<br>
+						<label class="switch">
+							<input name="skipVideo" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="analytics">Allow Anonymous Analytics</label>
+						<br>
+						<br>
+						<label class="switch">
+							<input name="analytics" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="input">
+						<label for="blacklistedTags">Blacklisted Tags (Space Separated)</label>
+						<input type="text" name="blacklistedTags" placeholder="Any tags you want to globally skip.">
+					</td>
+				</tr>
+				<tr>
+					<td class="input">
+						<label for="threads">Number Of Threads To Use (1 min, 3 max)</label>
+						<input type="number" name="threads" placeholder="1, 2, or 3" min="1" max="3">
+					</td>
+				</tr>
+				<tr>
+					<td class="submit">
+						<input type="submit" value="Submit">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+	<script>
+		const key = document.querySelector("input[name=key]");
+		const username = document.querySelector("input[name=username]");
+		const saveDirectory = document.querySelector("input[name=saveDirectory]");
+		const logFile = document.querySelector("input[name=logFile]");
+		const overwriteExisting = document.querySelector("input[name=overwriteExisting]");
+		const useCache = document.querySelector("input[name=useCache]");
+		const skipFlash = document.querySelector("input[name=skipFlash]");
+		const skipVideo = document.querySelector("input[name=skipVideo]");
+		const analytics = document.querySelector("input[name=analytics]");
+		const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
+		const threads = document.querySelector("input[name=threads]");
+
+		function setupDone() {
+			key.value = config.key || "";
+			username.value = config.username || "";
+			saveDirectory.value = rawConfig.saveDirectory || "";
+			logFile.value = rawConfig.logFile || "";
+			if (config.overwriteExisting) overwriteExisting.checked = "checked";
+			if (config.useCache) useCache.checked = "checked";
+			if (config.skipFlash) skipFlash.checked = "checked";
+			if (config.skipVideo) skipVideo.checked = "checked";
+			if (config.analytics) analytics.checked = "checked";
+			blacklistedTags.value = config.blacklistedTags.join(" ");
+			threads.value = config.threads;
+		}
+
+		/**
+		 * @param {HTMLFormElement} e
+		 */
+		function handleSubmit(e) {
+			const [
+				{
+					value: key
+				}, {
+					value: username
+				}, {
+					value: saveDirectory
+				}, {
+					value: logFile
+				}, {
+					checked: overwriteExisting
+				}, {
+					checked: useCache
+				}, {
+					checked: skipFlash
+				}, {
+					checked: skipVideo
+				}, {
+					checked: analytics
+				}, {
+					value: blT
+				}, {
+					value: threads
+				}
+			] = Array.from(e.querySelectorAll("input")).slice(0, -1);
+			const v = blT.split(" ")
+			updateSettings({
+				key,
+				username,
+				saveDirectory,
+				logFile,
+				overwriteExisting,
+				useCache,
+				skipFlash,
+				skipVideo,
+				analytics,
+				blacklistedTags: !v?.[0] ? [] : v,
+				threads
+			});
+		}
+	</script>
+	<a href="./index.html" class="bottom-left">Back</a>
+</body>
+
 </html>
