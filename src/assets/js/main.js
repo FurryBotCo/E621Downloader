@@ -184,83 +184,9 @@ async function start(tags, folder) {
 
 			case "download-done": {
 				const [total, time] = args;
-				return createLogEntry(`Finished downloading ${total} posts in ${ms(time)}`, "info");
-			}
-		}
-		return;
-		switch (type) {
-			case "fetch-begin": {
-				const [tags, usingAuth] = args;
-				return createLogEntry(`Starting a search with the tags "${tags.join(" ")}" (using auth: ${usingAuth ? "YES" : "NO"})`, "info");
-				break;
-			}
-
-			case "fetch-start": {
-				const [tags, page] = args;
-				return createLogEntry(`Processing Page #${page}.`, "info");
-				break;
-			}
-
-			case "fetch-receive": {
-				const [tags, page, amount] = args;
-				return createLogEntry(`${amount} posts found on page #${page}.`, "info");
-				break;
-			}
-
-			case "fetch-finish": {
-				const [tags, amount] = args;
-				if (!window.cliMode) showProgress();
-				return createLogEntry(`Got ${amount} total posts.`, "info");
-				break;
-			}
-
-			case "skip": {
-				const [id, reason, shownPrev] = args;
-				if (!window.cliMode) showProgress();
-				createLogEntry(`Skipped post #${id} (${reason})`, "info");
-				if (reason === "no image url" && shownPrev === false) globalBlacklistNotice();
-				break;
-			}
-
-			case "dir": {
-				const [dir] = args;
-				return createLogEntry(`Downloading to directory:\n"${dir}"`, "info");
-				break;
-			}
-
-			case "download-start": {
-				const [id, ms] = args;
-				return createLogEntry(`Starting download of post #${id}`, "info");
-				break;
-			}
-
-			case "download-finish": {
-				const [id, num, amount, timeMS, time, ext] = args;
-				return createLogEntry(`[${num}/${amount}] Downloaded post #${id} in ${time}`, "success");
-				break;
-			}
-
-			case "end": {
-				const [tags, amount, timeMS, time] = args;
-				console.debug("end");
 				ipcRenderer.removeListener("message", l);
 				window.active = false;
-				createLogEntry(`Finished downloading ${amount} posts in ${time}`, "info");
-				if (window.cliMode) {
-					ipcRenderer.send("cli-end");
-				} else {
-					if (document.hasFocus()) console.debug("Not showing notification as window is focused.");
-					else {
-						showNotification("E621 Downloader", `Finished downloading ${amount} post(s) with the tag(s) "${tags.join(" ")}" in ${time}.`);
-						console.debug("Showed notification.");
-					}
-				}
-				break;
-			}
-
-			case "error": {
-				const [message] = args;
-				return createLogEntry(message, "error");
+				return createLogEntry(`Finished downloading ${total} posts in ${ms(time)}`, "info");
 			}
 		}
 	};
