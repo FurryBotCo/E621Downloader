@@ -89,15 +89,15 @@ export default class ConfigManager {
 	static setup() {
 		this.getDefaultsSync();
 		if (this._cache) return this._cache;
+		if (!fs.existsSync(this.CONFIG_DIR)) {
+			Logger.debug("ConfigManager", `Creating configuration directory "${this.CONFIG_DIR}"`);
+			fs.mkdirpSync(this.CONFIG_DIR);
+		}
+		if (!fs.existsSync(this.DOC_DIR)) {
+			Logger.debug("ConfigManager", `Creating document directory "${this.DOC_DIR}"`);
+			fs.mkdirpSync(this.DOC_DIR);
+		}
 		if (!fs.existsSync(this.FILE)) {
-			if (!fs.existsSync(this.CONFIG_DIR)) {
-				Logger.debug("ConfigManager", `Creating configuration directory "${this.CONFIG_DIR}"`);
-				fs.mkdirpSync(this.CONFIG_DIR);
-			}
-			if (!fs.existsSync(this.DOC_DIR)) {
-				Logger.debug("ConfigManager", `Creating document directory "${this.DOC_DIR}"`);
-				fs.mkdirpSync(this.DOC_DIR);
-			}
 			Logger.debug("ConfigManager", `Copying default config file "${this.DEFAULT_FILE}" to "${this.FILE}"`);
 			fs.copyFileSync(this.DEFAULT_FILE, this.FILE);
 		} else {
