@@ -23,6 +23,7 @@ const o = program.opts();
 // because of the description override
 if (o.help === true) program.help();
 
+ConfigManager.setup();
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 Logger.debug("Main", `Development Mode: ${o.dev ? "Yes" : "No"}`);
 
