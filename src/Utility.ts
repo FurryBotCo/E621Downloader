@@ -165,7 +165,9 @@ export default class Utility {
 			ext: string;
 			tags: string[];
 		}[] = [];
-		return new Promise<typeof posts>((a, b) => {
+		// this is because of discoloring in vsc for some reason
+		type Posts = typeof posts;
+		return new Promise<Posts>((a, b) => {
 			https.request({
 				method: "GET",
 				hostname: "e621.net",
@@ -276,40 +278,6 @@ export default class Utility {
 		ev.reply("debug", "dir", dir);
 
 		Downloader.start(tags, folder, ev);
-
-		/* const posts = await Utility.getPosts(tags, auth, 1, null, ev);
-		let i = 0;
-		const cache: {
-			[k: string]: number[];
-		} = c.useCache ? fs.existsSync(`${c.saveDirectory}/cache.json`) ? JSON.parse(fs.readFileSync(`${c.saveDirectory}/cache.json`).toString()) : {} : {};
-		for (const post of posts) {
-			function progress() {
-				const p = (v / posts.length);
-				window.setProgressBar(p);
-				ev.reply("progress", v, posts.length);
-			}
-			const v = ++i;
-
-			if (c.useCache && cache[tags.join(" ").toLowerCase()].includes(post.id)) ev?.reply("debug", "skip", post.id, "Post is in cache list.");
-			else if (c.skipFlash && post.ext === "swf") ev?.reply("debug", "skip", post.id, "Flash content.");
-			else if (c.skipVideo && post.ext === "webm") ev?.reply("debug", "skip", post.id, "Video content.");
-			else if (c.blacklistedTags.some(t => post.tags.includes(t))) ev?.reply("debug", "skip", post.id, "Blacklisted tag.");
-			else await Utility.downloadImage(post.id, post.url, post.ext, v, posts.length, dir, ev);
-
-			if (c.useCache) {
-				if (!cache[tags.join(" ").toLowerCase()]) cache[tags.join(" ").toLowerCase()] = [post.id];
-				else if (!cache[tags.join(" ").toLowerCase()].includes(post.id)) cache[tags.join(" ").toLowerCase()].push(post.id);
-			}
-
-			progress();
-		}
-		const end = performance.now();
-		await Analytics.track("download-finish", { tags });
-
-		if (c.useCache) fs.writeFileSync(`${c.saveDirectory}/cache.json`, JSON.stringify(cache, null, "\t"));
-		if (fs.readdirSync(dir).length === 0) fs.unlinkSync(dir);
-		window.setProgressBar(-1);
-		ev.reply("debug", "end", tags, posts.length, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true)); */
 	}
 
 	static mergeObjects<A = object, B = object>(a: A, b: B) {
@@ -368,7 +336,7 @@ export default class Utility {
 
 		let showUpdate = false;
 		if (!upToDate) {
-			const f = `${ConfigManager.DIR}/version-check`;
+			const f = `${ConfigManager.CONFIG_DIR}/version-check`;
 			if (fs.existsSync(f)) {
 				const v = fs.readFileSync(f).toString();
 				if (v !== latest.tag_name) showUpdate = true;
@@ -389,7 +357,7 @@ export default class Utility {
 	}
 
 	static checkLock() {
-		if (fs.existsSync(`${ConfigManager.DIR}/lock`)) {
+		if (fs.existsSync(`${ConfigManager.CONFIG_DIR}/lock`)) {
 			const c = dialog.showMessageBoxSync({
 				type: "error",
 				buttons: [
@@ -399,24 +367,24 @@ export default class Utility {
 				],
 				title: "Application Is Locked",
 				message: `Only one instance may be running at a time to avoid conflicts.`,
-				detail: `Close the other instance of this application, or delete the lockfile "${ConfigManager.DIR}/lock" if that doesn't work.\n\nI do not recommend continuing.`,
+				detail: `Close the other instance of this application, or delete the lockfile "${ConfigManager.CONFIG_DIR}/lock" if that doesn't work.\n\nI do not recommend continuing.`,
 				defaultId: 0
 			});
 			switch (c) {
 				default: break;
-				case 1: shell.openPath(ConfigManager.DIR); break;
-				case 2: fs.unlinkSync(`${ConfigManager.DIR}/lock`); break;
+				case 1: shell.openPath(ConfigManager.CONFIG_DIR); break;
+				case 2: fs.unlinkSync(`${ConfigManager.CONFIG_DIR}/lock`); break;
 			}
 			if (![2].includes(c)) process.exit(-1);
 		} else {
-			fs.writeFileSync(`${ConfigManager.DIR}/lock`, "");
-			Logger.debug("Main", `Wrote lockfile "${ConfigManager.DIR}/lock".`);
+			fs.writeFileSync(`${ConfigManager.CONFIG_DIR}/lock`, "");
+			Logger.debug("Main", `Wrote lockfile "${ConfigManager.CONFIG_DIR}/lock".`);
 			process.on("exit", () => {
-				if (fs.existsSync(`${ConfigManager.DIR}/lock`)) {
-					fs.unlinkSync(`${ConfigManager.DIR}/lock`);
-					Logger.debug("Main", `Removed lockfile "${ConfigManager.DIR}/lock".`);
+				if (fs.existsSync(`${ConfigManager.CONFIG_DIR}/lock`)) {
+					fs.unlinkSync(`${ConfigManager.CONFIG_DIR}/lock`);
+					Logger.debug("Main", `Removed lockfile "${ConfigManager.CONFIG_DIR}/lock".`);
 				} else {
-					Logger.debug("Main", `Lockfile "${ConfigManager.DIR}/lock" does not exist. Maybe it was prematurely deleted?`);
+					Logger.debug("Main", `Lockfile "${ConfigManager.CONFIG_DIR}/lock" does not exist. Maybe it was prematurely deleted?`);
 				}
 			});
 		}
@@ -451,15 +419,15 @@ export default class Utility {
 
 	static checkConfig() {
 		Logger.debug("Utility->ConfigCheck", "Checking stored version against current..");
-		if (!fs.existsSync(`${ConfigManager.DIR}/version`)) {
+		if (!fs.existsSync(`${ConfigManager.CONFIG_DIR}/version`)) {
 			Logger.debug("Utility->ConfigCheck", "No stored version, assuming up to date.");
-			fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
+			fs.writeFileSync(`${ConfigManager.CONFIG_DIR}/version`, `v${pkg.version}`);
 		} else {
-			const v = fs.readFileSync(`${ConfigManager.DIR}/version`).toString();
+			const v = fs.readFileSync(`${ConfigManager.CONFIG_DIR}/version`).toString();
 			if (v !== `v${pkg.version}`) {
 				Logger.debug("Utility->ConfigCheck", `Stored version (${v}) does not match current (v${pkg.version}), updating..`);
 				this.refreshDefaults();
-				fs.writeFileSync(`${ConfigManager.DIR}/version`, `v${pkg.version}`);
+				fs.writeFileSync(`${ConfigManager.CONFIG_DIR}/version`, `v${pkg.version}`);
 			} else {
 				Logger.debug("Utility->ConfigCheck", "Stored version matches current, not updating.");
 			}

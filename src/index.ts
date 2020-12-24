@@ -45,7 +45,7 @@ ipcMain
 	.on("log", (ev, type: string, ...messages: string[]) =>
 		Logger[type]?.("CLIENT", messages)
 	)
-	.on("show-update", (ev, version: string) => fs.writeFileSync(`${ConfigManager.DIR}/version-check`, version))
+	.on("show-update", (ev, version: string) => fs.writeFileSync(`${ConfigManager.CONFIG_DIR}/version-check`, version))
 	.on("setup", async (ev) => {
 		const v = await Utility.getRelease();
 		ev.reply("setup", ConfigManager.get(), ConfigManager.get(true), v);
@@ -56,13 +56,13 @@ app
 	.on("ready", async () => {
 		Utility.checkLock();
 		// the default value is "PROMPT", but it's not allowed after this check
-		if ((ConfigManager.get().analytics as unknown as "PROMPT") === "PROMPT") Utility.askAnalytics();
-		if (!fs.existsSync(`${ConfigManager.DIR}/firstrun`)) {
+		// if ((ConfigManager.get().analytics as unknown as "PROMPT") === "PROMPT") Utility.askAnalytics();
+		if (!fs.existsSync(`${ConfigManager.CONFIG_DIR}/firstrun`)) {
 			await Analytics.track("install", {
 				platform: os.platform(),
 				arch: os.arch()
 			});
-			fs.writeFileSync(`${ConfigManager.DIR}/firstrun`, "");
+			fs.writeFileSync(`${ConfigManager.CONFIG_DIR}/firstrun`, "");
 		}
 		await Analytics.track("ready");
 		Utility.checkConfig();

@@ -1,7 +1,7 @@
 key: ""
 username: ""
-saveDirectory: "%CONFIG%/Files"
-logFile: "%CONFIG%/out.log"
+saveDirectory: "%DOC%/Files"
+logFile: "%DOC%/out.log"
 overwriteExisting: true
 useCache: true
 skipFlash: false
