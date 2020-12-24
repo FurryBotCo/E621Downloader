@@ -151,11 +151,15 @@ async function start(tags, folder) {
 
 			case "fetch-finish": {
 				const [total, time] = args;
+				resetProgress(total);
 				return createLogEntry(`Finished fetching ${total} posts in ${ms(time)}`, "info");
 			}
 
 			case "skip": {
-				const [thread, id, reason, current, total] = args;
+				showProgress();
+				incrementProgress();
+				const { current, total } = getProgress();
+				const [thread, id, reason,/*current*/,/*total*/] = args;
 				const t =
 					reason === "cache" ? "Post is cached." :
 						reason === "fileExists" ? "File already exists." :
@@ -166,13 +170,16 @@ async function start(tags, folder) {
 			}
 
 			case "post-finish": {
-				const [thread, id, time, current, total] = args;
-				return createLogEntry(`[Thread #${thread}][${current}/${total}] Finished downloading post #${id} in ${ms(time)}`, "info");
+				showProgress();
+				const { current, total } = getProgress();
+				incrementProgress();
+				const [thread, id, time, /*current*/, /*total*/] = args;
+				return createLogEntry(`[${current}/${total}] Finished downloading post #${id} in ${ms(time)}`, "info");
 			}
 
 			case "thread-done": {
 				const [thread, amount, time] = args;
-				return createLogEntry(`[Thread #${thread}] Finished downloading ${amount} posts in ${ms(time)}`, "info");
+				return createLogEntry(`Thread #${thread} finished downloading ${amount} posts in ${ms(time)}`, "info");
 			}
 
 			case "download-done": {

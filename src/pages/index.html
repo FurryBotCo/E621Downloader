@@ -55,6 +55,22 @@
 		function hideProgress() {
 			document.querySelector("div#progress").classList.add("hidden");
 		}
+		function resetProgress(t) {
+			const v = document.querySelector("div#progress progress");
+			v.value = 0;
+			v.max = t;
+		}
+		function incrementProgress() {
+			const v = document.querySelector("div#progress progress");
+			v.value = Number(v.value) + 1;
+		}
+		function getProgress() {
+			const v = document.querySelector("div#progress progress");
+			return {
+				current: v.value + 1,
+				total: v.max
+			};
+		}
 		function createLogEntry(text, type) {
 			console.debug(text);
 			text = text.replace(/\n/g, "<br>");
