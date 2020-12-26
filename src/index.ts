@@ -11,6 +11,8 @@ const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) :
 import { program } from "commander";
 import os from "os";
 
+require("update-electron-app")();
+if (require("electron-squirrel-startup")) app.quit();
 // Logger.debug("Main->ProcessAguments", process.argv);
 // Logger.debug("Main->InternalAguments", args);
 
@@ -26,8 +28,6 @@ if (o.help === true) program.help();
 ConfigManager.setup();
 Logger.debug("Main", `Log File: ${ConfigManager.get().logFile}`);
 Logger.debug("Main", `Development Mode: ${o.dev ? "Yes" : "No"}`);
-
-if (require("electron-squirrel-startup")) app.quit();
 
 let window: BrowserWindow, state: windowStateKeeper.State;
 
