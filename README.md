@@ -11,3 +11,17 @@ Head over to our [release page](https://github.com/FurryBotCo/E621Downloader/rel
 - [ ] Ubuntu (snap) (planned)
 - [x] RedHat (rpm)
 - [x] MacOS (dmg)
+
+### TODO
+- [x] switch to [e621downloader.js](https://npm.im/e621downloader.js)
+- [ ] Reset "active" button
+- [ ] Specific message when zero posts are returned
+- [ ] branch out to more services, like [FurAffinity](https://furaffinity.net)
+- [] Save the md5 of images to check for duplicates across different tag sets
+- [ ] Incorporate a duplicate image checker that can be ran with a button
+- [ ] Refresh previously downloaded tags button
+
+### Known Bugs
+- [ ] Fix progress bar going in reverse (??) when you run a second run after one finished
+- [ ] Fix progress bar (it apparently broke?)
+- [ ] (Fix Windows not working)[#3]
