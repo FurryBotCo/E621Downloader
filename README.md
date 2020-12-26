@@ -17,7 +17,7 @@ Head over to our [release page](https://github.com/FurryBotCo/E621Downloader/rel
 - [ ] Reset "active" button
 - [ ] Specific message when zero posts are returned
 - [ ] branch out to more services, like [FurAffinity](https://furaffinity.net)
-- [] Save the md5 of images to check for duplicates across different tag sets
+- [ ] Save the md5 of images to check for duplicates across different tag sets
 - [ ] Incorporate a duplicate image checker that can be ran with a button
 - [ ] Refresh previously downloaded tags button
 
