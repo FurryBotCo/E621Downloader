@@ -77,6 +77,10 @@
 				total: Number(v.max)
 			};
 		}
+		/**
+		 * @param {string} text
+		 * @param {string} type
+		 */
 		function createLogEntry(text, type) {
 			console.debug(text);
 			text = text.replace(/\n/g, "<br>");
@@ -86,11 +90,6 @@
 			document.querySelector("div#debug").scrollTop = document.querySelector(
 				"div#debug"
 			).scrollHeight;
-			/*const tooLong = checkLogSize();
-			  if(tooLong) {
-				  const e = Array.from(document.querySelectorAll("div#debug debug-entry"));
-				  e[0].parentNode.removeChild(e[0]);
-			  }*/
 		}
 		let timer, lastAutocomplete;
 		const tv = document.querySelector("input[name=tags]");
