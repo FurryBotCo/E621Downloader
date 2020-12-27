@@ -55,10 +55,12 @@
 		function hideProgress() {
 			document.querySelector("div#progress").classList.add("hidden");
 		}
+		/**
+		 * @param {(string | number)} t
+		 */
 		function resetProgress(t) {
 			const e = document.querySelector("div#progress");
-			const j = Array.from(e.querySelectorAll("progress"));
-			if (j.length > 0) j.map(v => e.removeChild(v));
+			Array.from(e.querySelectorAll("progress")).map(v => e.removeChild(v));
 			const v = document.createElement("progress");
 			v.value = "0";
 			v.max = t.toString();
