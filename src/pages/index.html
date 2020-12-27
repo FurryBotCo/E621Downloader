@@ -56,19 +56,23 @@
 			document.querySelector("div#progress").classList.add("hidden");
 		}
 		function resetProgress(t) {
-			const v = document.querySelector("div#progress progress");
-			v.value = 0;
-			v.max = t;
+			const e = document.querySelector("div#progress");
+			const j = Array.from(e.querySelectorAll("progress"));
+			if (j.length > 0) j.map(v => e.removeChild(v));
+			const v = document.createElement("progress");
+			v.value = "0";
+			v.max = t.toString();
+			e.appendChild(v);
 		}
 		function incrementProgress() {
 			const v = document.querySelector("div#progress progress");
-			v.value = Number(v.value) + 1;
+			v.value = (Number(v.value) + 1).toString();
 		}
 		function getProgress() {
 			const v = document.querySelector("div#progress progress");
 			return {
-				current: v.value + 1,
-				total: v.max
+				current: Number(v.value) + 1,
+				total: Number(v.max)
 			};
 		}
 		function createLogEntry(text, type) {

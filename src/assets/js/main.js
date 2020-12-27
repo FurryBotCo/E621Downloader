@@ -152,11 +152,11 @@ async function start(tags, folder) {
 			case "fetch-finish": {
 				const [total, time] = args;
 				resetProgress(total);
+				showProgress();
 				return createLogEntry(`Finished fetching ${total} posts in ${ms(time)}`, "info");
 			}
 
 			case "skip": {
-				showProgress();
 				incrementProgress();
 				const { current, total } = getProgress();
 				const [thread, id, reason,/*current*/,/*total*/] = args;
@@ -170,7 +170,6 @@ async function start(tags, folder) {
 			}
 
 			case "post-finish": {
-				showProgress();
 				const { current, total } = getProgress();
 				incrementProgress();
 				const [thread, id, time, /*current*/, /*total*/] = args;
