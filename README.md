@@ -22,6 +22,6 @@ Head over to our [release page](https://github.com/FurryBotCo/E621Downloader/rel
 - [ ] Refresh previously downloaded tags button
 
 ### Known Bugs
+- [x] [Fix Windows not working](https://github.com/FurryBotCo/E621Downloader/issues/3)
 - [ ] Fix progress bar going in reverse (??) when you run a second run after one finished
 - [ ] Fix progress bar (it apparently broke?)
-- [ ] [Fix Windows not working](https://github.com/FurryBotCo/E621Downloader/issues/3)

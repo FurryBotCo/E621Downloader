@@ -11,7 +11,10 @@ const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) :
 import { program } from "commander";
 import os from "os";
 
-require("update-electron-app")();
+if (([
+	"win32",
+	"darwin"
+] as NodeJS.Platform[]).includes(process.platform)) require("update-electron-app")();
 if (require("electron-squirrel-startup")) app.quit();
 // Logger.debug("Main->ProcessAguments", process.argv);
 // Logger.debug("Main->InternalAguments", args);
