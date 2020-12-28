@@ -187,6 +187,16 @@ async function start(tags, folder) {
 				window.active = false;
 				return createLogEntry(`Finished downloading ${total} posts in ${ms(time)}`, "info");
 			}
+
+			case "no-posts": {
+				const [message] = args;
+				ipcRenderer.removeListener("message", l);
+				window.active = false;
+				resetProgress(1);
+				showProgress();
+				incrementProgress();
+				return createLogEntry(message, "info");
+			}
 		}
 	};
 	ipcRenderer.on("message", l);
