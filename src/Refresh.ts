@@ -3,15 +3,18 @@ import * as fs from "fs-extra";
 import E621Downloader from "e621downloader.js";
 import progress from "cli-progress";
 import ms from "e621downloader.js/build/src/util/Time";
+import path from "path";
 
 export default class Refresh {
 	static async run() {
 		const cnf = ConfigManager.get();
 		if (!cnf.useCache) throw new TypeError("Cache is not enabled. Launch the app, go to settings, enable it, and download some tags.");
-		if (!fs.existsSync(`${cnf.saveDirectory}/cache.json`)) throw new TypeError("Cache file not found.");
+		const v = path.resolve(`${cnf.saveDirectory}${cnf.saveDirectory.endsWith("E621Downloader/Files") ? "/.." : ""}/cache.json`);
+		console.log("Looking for cache file at:", v);
+		if (!fs.existsSync(v)) throw new TypeError("Cache file not found.");
 		const e = new E621Downloader({
 			...cnf,
-			cacheFile: `${cnf.saveDirectory}/cache.json`
+			cacheFile: v
 		});
 		const p = new progress.SingleBar({
 			hideCursor: true
