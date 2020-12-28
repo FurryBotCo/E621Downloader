@@ -24,7 +24,6 @@ Head over to our [release page](https://github.com/FurryBotCo/E621Downloader/rel
 
 ### Known Bugs
 - [x] [Fix Windows not working](https://github.com/FurryBotCo/E621Downloader/issues/3)
+- [x] [Fix cache parsing issue](https://github.com/FurryBotCo/E621Downloader/issues/5)
 - [x] Fix download progress bar going in reverse (??) when you run a second run after one finished (it seems like it has some issues resetting the progress bar)
 - [ ] Fix on-application progress bar (it apparently broke?)
-- [x] [Fix cache parsing issue](https://github.com/FurryBotCo/E621Downloader/issues/5)
-^ this is a pretty big issue but I have NO CLUE how it's happening or how to fix it
