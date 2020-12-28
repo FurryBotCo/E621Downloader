@@ -4,7 +4,6 @@ import ConfigManager, { ConfigProperties } from "./ConfigManager";
 import Logger from "./Logger";
 import Utility from "./Utility";
 import * as fs from "fs-extra";
-import Analytics from "./Analytics";
 import pkg from "../package.json";
 import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
@@ -61,16 +60,9 @@ else {
 	app
 		.on("ready", async () => {
 			Utility.checkLock();
-			// the default value is "PROMPT", but it's not allowed after this check
-			// if ((ConfigManager.get().analytics as unknown as "PROMPT") === "PROMPT") Utility.askAnalytics();
 			if (!fs.existsSync(`${ConfigManager.CONFIG_DIR}/firstrun`)) {
-				await Analytics.track("install", {
-					platform: os.platform(),
-					arch: os.arch()
-				});
 				fs.writeFileSync(`${ConfigManager.CONFIG_DIR}/firstrun`, "");
 			}
-			await Analytics.track("ready");
 			Utility.checkConfig();
 			state = windowStateKeeper({
 				defaultWidth: 800,

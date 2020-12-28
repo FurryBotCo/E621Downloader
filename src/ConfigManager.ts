@@ -22,8 +22,6 @@ export interface ConfigProperties {
 	skipVideo: boolean;
 	globalBlacklistNoticeShown: boolean;
 	blacklistedTags: string[];
-	analyticsId: null | string;
-	analytics: boolean;
 	threads: 1 | 2 | 3;
 }
 

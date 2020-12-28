@@ -97,17 +97,6 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<label for="analytics">Allow Anonymous Analytics</label>
-						<br>
-						<br>
-						<label class="switch">
-							<input name="analytics" type="checkbox">
-							<span class="slider round"></span>
-						</label>
-					</td>
-				</tr>
-				<tr>
 					<td class="input">
 						<label for="blacklistedTags">Blacklisted Tags (Space Separated)</label>
 						<input type="text" name="blacklistedTags" placeholder="Any tags you want to globally skip.">
@@ -136,7 +125,6 @@
 		const useCache = document.querySelector("input[name=useCache]");
 		const skipFlash = document.querySelector("input[name=skipFlash]");
 		const skipVideo = document.querySelector("input[name=skipVideo]");
-		const analytics = document.querySelector("input[name=analytics]");
 		const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
 		const threads = document.querySelector("input[name=threads]");
 
@@ -149,7 +137,6 @@
 			if (config.useCache) useCache.checked = "checked";
 			if (config.skipFlash) skipFlash.checked = "checked";
 			if (config.skipVideo) skipVideo.checked = "checked";
-			if (config.analytics) analytics.checked = "checked";
 			blacklistedTags.value = config.blacklistedTags.join(" ");
 			threads.value = config.threads;
 		}
@@ -176,8 +163,6 @@
 				}, {
 					checked: skipVideo
 				}, {
-					checked: analytics
-				}, {
 					value: blT
 				}, {
 					value: threads
@@ -193,7 +178,6 @@
 				useCache,
 				skipFlash,
 				skipVideo,
-				analytics,
 				blacklistedTags: !v?.[0] ? [] : v,
 				threads
 			});

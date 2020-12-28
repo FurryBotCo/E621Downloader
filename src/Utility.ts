@@ -6,9 +6,8 @@ import ConfigManager from "./ConfigManager";
 import URL from "url";
 import path from "path";
 import { performance } from "perf_hooks";
-import { BrowserWindow, dialog, ipcMain, shell } from "electron";
+import { dialog, shell } from "electron";
 import Logger from "./Logger";
-import Analytics from "./Analytics";
 import Downloader from "./Downloader";
 
 interface MsResponse {
@@ -92,7 +91,6 @@ export default class Utility {
 	}
 
 	static async autocompleteRequest(tag: string) {
-		await Analytics.track("autocomplete", { tag });
 		return new Promise<{ error: boolean; data: any; }>((a, b) => {
 			https.request({
 				method: "GET",
@@ -152,11 +150,6 @@ export default class Utility {
 	}
 
 	static async getPosts(tags: string[], auth: string | null, page: number, lastId?: number | null, ev?: Electron.IpcMainEvent | null) {
-		await Analytics.track("get-posts", {
-			tags,
-			// this is a BOOLEAN, we are not stealing your api key!
-			authUsed: !!auth
-		});
 		if (page === 1) ev?.reply("debug", "fetch-begin", tags, !!auth);
 		ev?.reply("debug", "fetch-start", tags, page);
 		const posts: {
@@ -215,15 +208,9 @@ export default class Utility {
 
 	static async downloadImage(id: number, url: string, ext: string, num: number, total: number, dir: string, ev?: Electron.IpcMainEvent | null) {
 		if (!url) {
-			Analytics.track("no-image-url", {
-				id
-			});
 			ev?.reply("debug", "skip", id, "no image url", ConfigManager.get().globalBlacklistNoticeShown);
 			return;
 		} else if (fs.existsSync(`${dir}/${id}.${ext}`) && !ConfigManager.get().overwriteExisting) {
-			await Analytics.track("file-exists", {
-				id
-			});
 			ev?.reply("debug", "skip", id, "file already exists");
 			return;
 		}
@@ -256,9 +243,6 @@ export default class Utility {
 						const d = Buffer.concat(data);
 						fs.writeFileSync(`${dir}/${id}.${ext}`, d);
 						const end = performance.now();
-						await Analytics.track("download-image", {
-							id
-						});
 						ev?.reply("debug", "download-finish", id, num, total, parseFloat((end - start).toFixed(3)), this.ms(parseFloat((end - start).toFixed(3)), true, true));
 						return a();
 					});
@@ -268,9 +252,6 @@ export default class Utility {
 	}
 
 	static async startDownload(ev: Electron.IpcMainEvent, tags: string[], folder: string, window: Electron.BrowserWindow) {
-		await Analytics.track("download-start", {
-			tags
-		});
 		const start = performance.now();
 		const c = ConfigManager.get();
 		const dir = path.resolve(`${c.saveDirectory}/${folder.trim()}`);
@@ -386,33 +367,6 @@ export default class Utility {
 				} else {
 					Logger.debug("Main", `Lockfile "${ConfigManager.CONFIG_DIR}/lock" does not exist. Maybe it was prematurely deleted?`);
 				}
-			});
-		}
-	}
-
-	static askAnalytics() {
-		const c = dialog.showMessageBoxSync({
-			type: "info",
-			buttons: [
-				"Accept",
-				"Deny"
-			],
-			title: "Anonymous Analytics Agreement",
-			message: "We may send anonymous analytics about how you use our app.",
-			detail: "We may send anonymous analytics about what tags you search, and how many posts are downloaded total to get an overall look of app usage. These are completely anonymous, and can be turned off at any time by going to the settings menu.",
-			defaultId: 0
-		});
-		switch (c) {
-			case 0: {
-				ConfigManager.edit({
-					analytics: true,
-					analyticsId: Analytics.getId()
-				});
-				break;
-			}
-
-			default: ConfigManager.edit({
-				analytics: false
 			});
 		}
 	}
