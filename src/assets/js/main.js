@@ -159,13 +159,14 @@ async function start(tags, folder) {
 			case "skip": {
 				incrementProgress();
 				const { current, total } = getProgress();
-				const [thread, id, reason,/*current*/,/*total*/] = args;
+				const [id, reason, tag] = args;
 				const t =
 					reason === "cache" ? "Post is cached." :
 						reason === "fileExists" ? "File already exists." :
 							reason === "video" ? "Post is a video." :
 								reason === "flash" ? "Post is flash." :
-									reason;
+									reason === "blacklisted" ? `it having a blacklisted tag (${tag})` :
+										reason;
 				return createLogEntry(`[${current}/${total}] Skipped post #${id}, reason: ${t}`, "info");
 			}
 
