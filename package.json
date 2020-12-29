@@ -146,7 +146,7 @@
 		"cli-progress": "^3.8.2",
 		"commander": "^6.2.1",
 		"deasync": "^0.1.21",
-		"e621downloader.js": "^1.0.25",
+		"e621downloader.js": "^1.0.26",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-window-state": "^5.0.3",
 		"express": "^4.17.1",
