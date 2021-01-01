@@ -9,12 +9,11 @@ export default class Refresh {
 	static async run() {
 		const cnf = ConfigManager.get();
 		if (!cnf.useCache) throw new TypeError("Cache is not enabled. Launch the app, go to settings, enable it, and download some tags.");
-		const v = path.resolve(`${cnf.saveDirectory}${cnf.saveDirectory.endsWith("E621Downloader/Files") ? "/.." : ""}/cache.json`);
-		console.log("Looking for cache file at:", v);
-		if (!fs.existsSync(v)) throw new TypeError("Cache file not found.");
+		const v = path.resolve(`${cnf.saveDirectory}${cnf.saveDirectory.endsWith("E621Downloader/Files") ? "/.." : ""}/cache`);
+		console.log(`Looking for cache files in directory "${v}"`);
 		const e = new E621Downloader({
 			...cnf,
-			cacheFile: v
+			cacheDir: v
 		});
 		const p = new progress.SingleBar({
 			hideCursor: true
@@ -64,10 +63,13 @@ export default class Refresh {
 				i = 0;
 				log(`Started download with tags "${tags.join(" ")}" into directory "${dir}", with ${threads} threads.`);
 			})
-			.on("thread-spawn", (id, workerId) => log(`Spawned thread #${id} (Worker ID: ${workerId})`));
+			.on("thread-spawn", (id, workerId) => log(`Spawned thread #${id} (Worker ID: ${workerId})`))
+			// .on("debug", (location, info) => console.debug(`[${location}]:`, info))
+			.on("error", (location, err) => console.error(`[${location}]:`, err))
+			.on("warn", (location, info) => console.warn(`[${location}]:`, info));
 
 		await e.refresh.run(cnf.threads).then(r => {
-			for (const v of r) console.log(`[${v.tags.join(" ")}]: ${v.total.old === v.total.new ? "No Change." : `+${v.total.new - v.total.old}`}`);
+			for (const v of r) console.log(`[${v.tags.join(" ")}]: ${v.error === null ? v.total.old === v.total.new ? "No Change." : `+${v.total.new - v.total.old}` : `Error, ${v.error.stack}`}`);
 		});
 	}
 }

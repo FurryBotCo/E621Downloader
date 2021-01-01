@@ -13,7 +13,7 @@ export default class Downloader {
 		const cnf = ConfigManager.get();
 		const { instance: c } = this.CURRENT = {
 			instance: new E621Downloader({
-				cacheFile: `${cnf.saveDirectory}/cache.json`,
+				cacheDir: `${cnf.saveDirectory}/cache`,
 				auth: cnf.username && cnf.key ? {
 					username: cnf.username,
 					apiKey: cnf.key
