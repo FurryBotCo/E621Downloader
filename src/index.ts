@@ -81,14 +81,13 @@ else {
 					contextIsolation: false
 				},
 				icon: `${__dirname}/assets/icons/png/256x256.png`,
-				frame: !o.cli
+				frame: true
 			});
-			if (o.cli) window.hide();
 			window.removeMenu();
 			state.manage(window);
 			window.setBackgroundColor("#333");
 			if (o.dev) window.webContents.openDevTools();
-			window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/${o.cli ? "cli" : "index"}.html`);
+			window.loadFile(`${ConfigManager.ROOT_DIR}/src/pages/index.html`);
 		})
 		.on("window-all-closed", () => {
 			if (process.platform !== "darwin") app.quit();
