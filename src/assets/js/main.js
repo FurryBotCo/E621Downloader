@@ -281,3 +281,8 @@ function showNotification(title, body, url) {
 		shell.openExternal(url);
 	});
 }
+
+// CTRL+SHIFT+I & F12 for dev console
+document.addEventListener("keydown", (ev) => {
+	if ((ev.ctrlKey && ev.shiftKey && ev.code === "KeyI") || ev.code === "F12") ipcRenderer.send("open-dev-tools");
+});
