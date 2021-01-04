@@ -8,8 +8,8 @@ import pkg from "../package.json";
 import "source-map-support/register";
 const args = (process.argv0.indexOf("electron") !== -1 ? process.argv.slice(2) : process.argv.slice(1)).map(v => v.toLowerCase());
 import { program } from "commander";
-import os from "os";
 import Refresh from "./Refresh";
+require("@electron/remote/main").initialize();
 
 if (([
 	"win32",

@@ -1,4 +1,5 @@
-const { ipcRenderer, remote: { dialog }, shell } = require("electron");
+const { ipcRenderer, shell } = require("electron");
+const { dialog } = require("@electron/remote");
 const crypto = require("crypto");
 const util = require("util");
 ipcRenderer.on("error", (ev, err) => {
