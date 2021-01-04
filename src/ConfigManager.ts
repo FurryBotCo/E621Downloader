@@ -51,7 +51,7 @@ export default class ConfigManager {
 	static async getDefaults(cb: (err: Error | null, res: ConfigProperties) => void): Promise<void>
 	static async getDefaults(cb?: (err: Error | null, res: ConfigProperties) => void): Promise<ConfigProperties | void> {
 		if (fs.existsSync(this.DEFAULT_FILE)) {
-			const v = YAML.safeLoad(this.loadDefault().toString()) as ConfigProperties;
+			const v = YAML.load(this.loadDefault().toString()) as ConfigProperties;
 			return cb ? cb(null, v) : v;
 		}
 		await new Promise<void>((a, b) => {
@@ -69,7 +69,7 @@ export default class ConfigManager {
 						.on("error", (err) => b(err))
 						.on("end", () => {
 							const v = Buffer.concat(data);
-							const j = YAML.safeLoad(v.toString()) as ConfigProperties;
+							const j = YAML.load(v.toString()) as ConfigProperties;
 							fs.writeFileSync(this.DEFAULT_FILE, v.toString());
 							cb ? cb(null, j) : j;
 							a();
@@ -104,7 +104,7 @@ export default class ConfigManager {
 
 				const f = this.loadFile();
 				// tslint:disable-next-line no-unused-expression
-				YAML.safeLoad(f.toString()) as ConfigProperties;
+				YAML.load(f.toString()) as ConfigProperties;
 			} catch (e) {
 				Logger.error("ConfigManager", e);
 				Logger.log("ConfigManager", `Recreating config file due to read error`);
@@ -130,7 +130,7 @@ export default class ConfigManager {
 		} else {
 			this.setup();
 			const f = this.loadFile();
-			c = YAML.safeLoad(f.toString()) as ConfigProperties;
+			c = YAML.load(f.toString()) as ConfigProperties;
 		}
 		if (!raw) {
 			c.saveDirectory = this.parseDirectory(c.saveDirectory);
