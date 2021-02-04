@@ -106,14 +106,6 @@ function checkLogSize() {
 	return last?.[0]?.bottom > log[0].bottom;
 }
 
-
-window.cliMode = false;
-window.debugLog = true;
-ipcRenderer.on("cli-start", (ev, tags, folder, debug) => {
-	window.cliMode = true;
-	window.debugLog = !!debug;
-	start(tags, folder);
-});
 /**
  * 
  * @param {string[]} tags
@@ -184,10 +176,10 @@ async function start(tags, folder) {
 			}
 
 			case "download-done": {
-				const [total, time] = args;
+				const [total, skipped, time] = args;
 				ipcRenderer.removeListener("message", l);
 				window.active = false;
-				return createLogEntry(`Finished downloading ${total} posts in ${ms(time)}`, "info");
+				return createLogEntry(`Finished downloading ${total} posts (skipped ${skipped}) in ${ms(time)}`, "info");
 			}
 
 			case "no-posts": {
@@ -284,6 +276,8 @@ function showNotification(title, body, url) {
 }
 
 // CTRL+SHIFT+I & F12 for dev console
+// CTRL+R for reload
 document.addEventListener("keydown", (ev) => {
 	if ((ev.ctrlKey && ev.shiftKey && ev.code === "KeyI") || ev.code === "F12") ipcRenderer.send("open-dev-tools");
+	if (ev.ctrlKey && ev.code === "KeyR") window.location.reload();
 });

@@ -9,3 +9,4 @@ skipVideo: false
 globalBlacklistNoticeShown: false
 blacklistedTags: []
 threads: 3
+savePostInfo: false

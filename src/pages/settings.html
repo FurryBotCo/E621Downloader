@@ -97,6 +97,17 @@
 					</td>
 				</tr>
 				<tr>
+					<td>
+						<label for="savePostInfo">Save Post Info</label>
+						<br>
+						<br>
+						<label class="switch">
+							<input name="savePostInfo" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</td>
+				</tr>
+				<tr>
 					<td class="input">
 						<label for="blacklistedTags">Blacklisted Tags (Space Separated)</label>
 						<input type="text" name="blacklistedTags" placeholder="Any tags you want to globally skip.">
@@ -125,6 +136,7 @@
 		const useCache = document.querySelector("input[name=useCache]");
 		const skipFlash = document.querySelector("input[name=skipFlash]");
 		const skipVideo = document.querySelector("input[name=skipVideo]");
+		const savePostInfo = document.querySelector("input[name=savePostInfo]");
 		const blacklistedTags = document.querySelector("input[name=blacklistedTags]");
 		const threads = document.querySelector("input[name=threads]");
 
@@ -137,6 +149,7 @@
 			if (config.useCache) useCache.checked = "checked";
 			if (config.skipFlash) skipFlash.checked = "checked";
 			if (config.skipVideo) skipVideo.checked = "checked";
+			if (config.savePostInfo) savePostInfo.checked = "checked";
 			blacklistedTags.value = config.blacklistedTags.join(" ");
 			threads.value = config.threads;
 		}
@@ -162,6 +175,9 @@
 					checked: skipFlash
 				}, {
 					checked: skipVideo
+				},
+				{
+					checked: savePostInfo
 				}, {
 					value: blT
 				}, {
@@ -178,6 +194,7 @@
 				useCache,
 				skipFlash,
 				skipVideo,
+				savePostInfo,
 				blacklistedTags: !v?.[0] ? [] : v,
 				threads
 			});

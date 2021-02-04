@@ -23,6 +23,7 @@ export interface ConfigProperties {
 	globalBlacklistNoticeShown: boolean;
 	blacklistedTags: string[];
 	threads: 1 | 2 | 3;
+	savePostInfo: boolean;
 }
 
 export default class ConfigManager {
@@ -144,6 +145,6 @@ export default class ConfigManager {
 		const v = this.get();
 		const c = { ...v, ...values };
 		if (JSON.stringify(v) === JSON.stringify(c)) return;
-		fs.writeFileSync(this.FILE, YAML.safeDump(c));
+		fs.writeFileSync(this.FILE, YAML.dump(c));
 	}
 }

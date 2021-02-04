@@ -24,6 +24,7 @@ program
 	.version(pkg.version, "-v, --version", "Output the current application version.")
 	.option("--dev", "Run in development mode.")
 	.option("--refresh", "Refresh the cached tags.")
+	.option("--convert-cache <dir>", "Convert your old cache files to new formats.")
 	.parse([process.argv0, process.argv0, ...args]);
 const o = program.opts();
 
