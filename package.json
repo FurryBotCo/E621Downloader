@@ -1,6 +1,6 @@
 {
 	"name": "e621downloader",
-	"version": "1.0.0-beta.15",
+	"version": "1.0.0-beta.16",
 	"description": "Bulk image downloader for e621.",
 	"productName": "e621downloader",
 	"main": "build/src/index.js",
@@ -148,7 +148,7 @@
 		"cli-progress": "^3.9.0",
 		"commander": "^7.0.0",
 		"deasync": "^0.1.21",
-		"e621downloader.js": "1.1.1",
+		"e621downloader.js": "1.1.3",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-window-state": "^5.0.3",
 		"express": "^4.17.1",

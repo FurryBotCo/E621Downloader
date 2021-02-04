@@ -9,7 +9,7 @@ export default class Refresh {
 	static async run() {
 		const cnf = ConfigManager.get();
 		if (!cnf.useCache) throw new TypeError("Cache is not enabled. Launch the app, go to settings, enable it, and download some tags.");
-		const v = path.resolve(`${cnf.saveDirectory}${cnf.saveDirectory.endsWith("E621Downloader/Files") ? "/.." : ""}/cache`);
+		const v = E621Downloader.getDefaultCacheDir(cnf.saveDirectory);
 		console.log(`Looking for cache files in directory "${v}"`);
 		const e = new E621Downloader({
 			...cnf,
