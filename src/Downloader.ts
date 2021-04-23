@@ -35,7 +35,7 @@ export default class Downloader {
 			.on("download-start", ipc.reply.bind(ipc, "message", "download-start"))
 			.on("thread-spawn", ipc.reply.bind(ipc, "message", "thread-spawn"))
 			.on("download-done", () => (this.CURRENT = null, this.ACTIVE = false)) // a kind of reset
-			.startDownload(tags, folder, cnf.threads)
+			.startDownload(tags, folder, cnf.threads, cnf.blacklistedTags)
 			.catch((err: Error & E621Error) => {
 				switch (err.code) {
 					case "ERR_NO_POSTS": {

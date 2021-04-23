@@ -158,7 +158,7 @@ async function start(tags, folder) {
 						reason === "fileExists" ? "File already exists." :
 							reason === "video" ? "Post is a video." :
 								reason === "flash" ? "Post is flash." :
-									reason === "blacklisted" ? `it having a blacklisted tag (${tag})` :
+									reason === "blacklisted" ? `Post has a blacklisted tag (${tag}).` :
 										reason;
 				return createLogEntry(`[${current}/${total}] Skipped post #${id}, reason: ${t}`, "info");
 			}
